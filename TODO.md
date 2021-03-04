@@ -77,7 +77,7 @@
 
 ### Sonstiges
 
-- [ ] ggf. VideoAudio Stream ( moeglich mit 3rd Party Services)
+- [ ] ~~ggf. VideoAudio Stream ( moeglich mit 3rd Party Services)~~
 
 ## Backend
 
@@ -95,4 +95,4 @@
 ### IFC Loader
 
 - [x] Konvertierung von IFC zu GLTF ueber Skripte
-- [ ] Anbindung IFC-Model checker (Jakob Beetz, RWTH Aachen)
+- [ ] ~~Anbindung IFC-Model checker (Jakob Beetz, RWTH Aachen)~~
