@@ -17,13 +17,14 @@
 - [x] Übersicht Projekte
   - [x] Subprojekte anzeigen
 - [x] Neues projekt erstellen (admin)
-  - [ ] Subprojekte erstellen (projektmitglied)
+  - [x] Subprojekte erstellen (admin)
 
 ### View
 
 - [x] Einbindung ThreeJS
   - [x] Kamera Koordinaten an Server uebertragen
-  - [ ] Avatar Modelle anhand Koordinaten laden
+  - [x] Avatar Modelle anhand Koordinaten laden
+    - [ ] Avatar direction
   - [ ] Elemente klickbar machen ( border color )
   - [ ] Materialdaten uebertragen
 - [x] Einbindung Project Chatroom
@@ -36,10 +37,10 @@
   - [ ] Issues Liste
 - [x] Materials
   - [ ] Materialdaten Liste und klickbar machen
-- [ ] Saved Views
-  - [ ] Screenshot erstellen und ablegen
-- [ ] Files
-  - [ ] Projekstpezifische Dateien ablegen mit Modell verknuepfen
+- [x] Saved Views
+  - [x] Screenshot erstellen und ablegen
+- [x] Files
+  - [x] Projekstpezifische Dateien ablegen mit Modell verknuepfen
 
 ### Chat
 
@@ -56,12 +57,13 @@
     - [x] Youtube Vimo Vorschau
     - [ ] Links, PDF Vorschau
     - [ ] ggf Kommentarfunktion, Likes
+  - [ ] Tags
 - [ ] automatische Einbindung der Wiki Beitraege in die Uebersicht
 
 ### Project Edit
 
 - [x] IFC - DAE - GLTF Upload
-- [ ] Projektname / Beschreibung setzen
+- [x] Projektname / Beschreibung setzen
 - [ ] Projekt löschen
 
 ### User Profil
@@ -71,9 +73,9 @@
 
 ### Admin - User Management
 
-- [ ] Ubersicht aller Benutzer Chatrooms Projekte
-- [ ] Benutzer zu Admin delegieren
-- [ ] Benutzer zu Projekten zuweisen ( Batch: Emailadressen)
+- [x] Ubersicht aller Benutzer Chatrooms Projekte
+- [x] Benutzer zu Admin delegieren
+- [x] Benutzer zu Projekten zuweisen ( Batch: Emailadressen)
 
 ### Sonstiges
 
@@ -90,7 +92,7 @@
 - [x] Socketserver
 - [ ] Anbindung externer APIs
   - [x] Fetch Video description
-- [ ] API Umstellung auf NestJS Framework (Vorteile: Security,Modular)
+- [x] API Umstellung auf NestJS Framework
 
 ### IFC Loader
 
