@@ -29,7 +29,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/thk-code-arch/intercom">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.png" alt="Intercom Logo">
   </a>
 
   <h3 align="center">INTERCOM</h3>
@@ -78,8 +78,6 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 ### Built With
 
 - []()
@@ -94,22 +92,22 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Docker environment is needed. Example docker-compose depends on nginx-proxy &
+Let's encrypt.
 
 ### Installation
 
-1. Clone the repo
+1. Clone Repo
    ```sh
    git clone https://github.com/thk-code-arch/intercom.git
    ```
-2. Install NPM packages
+2. Prepare secrets.env
    ```sh
-   npm install
+   vi secrets.env
+   ```
+3. Start server
+   ```sh
+   docker-compose up -d
    ```
 
 <!-- USAGE EXAMPLES -->
@@ -120,13 +118,18 @@ This is an example of how to list things you need to use the software and how to
 
 ## Roadmap
 
-See the [TODO](https://github.com/thk-code-arch/intercom-backend/blob/master/TODO.md) for a list of proposed features (and known issues).
+See the [TODO](https://github.com/thk-code-arch/intercom/blob/master/TODO.md) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Start with one of the following repositorys:
+
+Client: [https://github.com/thk-code-arch/intercom-frontend](https://github.com/thk-code-arch/intercom-frontend)
+Server: [https://github.com/thk-code-arch/intercom-backend](https://github.com/thk-code-arch/intercom-backend)
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -138,7 +141,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+?
 
 <!-- CONTACT -->
 
