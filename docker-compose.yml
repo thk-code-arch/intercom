@@ -23,7 +23,7 @@ services:
       - LETSENCRYPT_HOST=
       - LETSENCRYPT_EMAIL=
     volumes:
-      - ./files:/files
+      - files:/files
     env_file:
       - secrets.env
 
@@ -31,3 +31,6 @@ networks:
   default:
     external:
       name: jwilder-proxy
+
+volumes:
+  files:

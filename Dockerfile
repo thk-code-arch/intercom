@@ -18,12 +18,15 @@ RUN unzip /backend/builds/IfcConvert.zip
 
 # keep it small
 FROM node:14.5.0-slim
-COPY --from=intercom /frontend/dist /intercom-frontend
 COPY --from=intercom /ifcopenshell/IfcConvert /usr/local/bin/IfcConvert
-COPY --from=intercom /backend/api /app
-COPY --from=intercom /backend/files /files
 
-VOLUME /files
+USER node
+
+COPY --chown=node:node --from=intercom /frontend/dist /intercom-frontend
+COPY --chown=node:node --from=intercom /backend/api /app
+COPY --chown=node:node --from=intercom /backend/files /files
+
+VOLUME ["/files"]
 # Create app directory
 WORKDIR /app
 EXPOSE 3000
