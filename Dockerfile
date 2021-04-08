@@ -23,6 +23,7 @@ COPY --from=intercom /ifcopenshell/IfcConvert /usr/local/bin/IfcConvert
 COPY --from=intercom /backend/api /app
 COPY --from=intercom /backend/files /files
 
+VOLUME /files
 # Create app directory
 WORKDIR /app
 EXPOSE 3000
