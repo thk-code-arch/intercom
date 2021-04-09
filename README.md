@@ -131,6 +131,9 @@ Start with one of the following repositorys:
 Client: [https://github.com/thk-code-arch/intercom-frontend](https://github.com/thk-code-arch/intercom-frontend)
 Server: [https://github.com/thk-code-arch/intercom-backend](https://github.com/thk-code-arch/intercom-backend)
 
+Or start with full local development setup.
+See the [README](https://github.com/thk-code-arch/intercom/blob/master/development/README.md) for a list of proposed features (and known issues).
+
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)

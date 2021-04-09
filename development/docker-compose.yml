@@ -1,0 +1,43 @@
+#
+# web-based InterCOM - platform for collaborative design
+# docker example for full local dev env.
+#
+
+version: '3'
+services:
+  dev-intercom-db:
+    container_name: dev-intercom-db
+    image: postgres:12
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: always
+    env_file:
+      - secrets.env
+
+  dev-intercom-backend:
+    container_name: dev-intercom-backend
+    build: ./intercom-backend/builds/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./intercom-backend/api:/app
+      - files:/files
+    env_file:
+      - secrets.env
+
+  dev-intercom-frontend:
+    container_name: dev-intercom-app
+    build: ./intercom-frontend/Dockerfile-dev
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./intercom-frontend:/app
+    env_file:
+      - secrets.env
+
+volumes:
+  files:
