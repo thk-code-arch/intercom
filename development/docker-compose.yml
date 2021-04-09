@@ -18,24 +18,26 @@ services:
 
   dev-intercom-backend:
     container_name: dev-intercom-backend
-    build: ./intercom-backend/builds/Dockerfile
+    build: ./intercom-backend/builds/.
     restart: always
     ports:
       - 3000:3000
     volumes:
       - ./intercom-backend/api:/app
-      - files:/files
+      - ./intercom-backend/files:/files
     env_file:
       - secrets.env
 
   dev-intercom-frontend:
-    container_name: dev-intercom-app
-    build: ./intercom-frontend/Dockerfile-dev
+    container_name: dev-intercom-frontend
+    build:
+        context: .
+        dockerfile: ./intercom-frontend/Dockerfile-dev
     restart: always
     ports:
       - 8080:8080
     volumes:
-      - ./intercom-frontend:/app
+      - ./intercom-frontend:/usr/src/app
     env_file:
       - secrets.env
 

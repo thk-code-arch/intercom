@@ -12,3 +12,10 @@
    ```sh
    docker-compose up -d
    ```
+4. Run some commands to initialize database
+   ```sh
+   docker exec -it dev-intercom-backend npm run pretypeorm
+   docker exec -it dev-intercom-backend npm run typeorm:migration:run
+   docker exec -it dev-intercom-backend npm run seed:run
+   ```
+
