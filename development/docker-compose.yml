@@ -12,14 +12,12 @@ services:
       - ./db:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    restart: always
     env_file:
       - secrets.env
 
   dev-intercom-backend:
     container_name: dev-intercom-backend
     build: ./intercom-backend/builds/.
-    restart: always
     ports:
       - 3000:3000
     volumes:
