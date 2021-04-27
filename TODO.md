@@ -46,6 +46,7 @@
 ### Chat
 
 - [x] Uebersicht aller Chatraeume und Raumwechsel
+- [ ] Protokoll erstellen (Zeitraum) export pdf
 - [ ] Neuen Allgemeinen Raum erstellen
 - [ ] Neuen Private Chat erstellen
 - [ ] File Upload, Emojis
