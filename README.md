@@ -29,7 +29,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/thk-code-arch/intercom">
-    <img src="images/logo.png" alt="Intercom Logo">
+    <img src="assets/logo.png" alt="Intercom Logo">
   </a>
 
   <h3 align="center">INTERCOM</h3>

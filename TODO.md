@@ -1,4 +1,4 @@
-## ToDO
+## ToDO 2021-04-27
 
 ## Frontend
 
@@ -6,7 +6,7 @@
 
 - [x] Login mit bestehendem Konto
 - [x] Registrierung ueber Invite Code
-- [ ] Passwort vergessen!
+- [x] Passwort vergessen!
 
 ### Home
 
@@ -39,6 +39,7 @@
   - [ ] Materialdaten Liste und klickbar machen
 - [x] Saved Views
   - [x] Screenshot erstellen und ablegen
+  - [x] Screenshot Annotation
 - [x] Files
   - [x] Projekstpezifische Dateien ablegen mit Modell verknuepfen
 
@@ -62,13 +63,13 @@
 
 ### Project Edit
 
-- [x] IFC - DAE - GLTF Upload
+- [x] IFC - IfcConvert - GLTF Upload
 - [x] Projektname / Beschreibung setzen
 - [ ] Projekt löschen
 
 ### User Profil
 
-- [ ] Bearbeiten persoehnliche Daten ( Profilbild, etc)
+- [x] Bearbeiten persoehnliche Daten ( Profilbild, etc)
 - [ ] Initialisierung einer BIM Collab Verbindung
 
 ### Admin - User Management
@@ -76,6 +77,7 @@
 - [x] Ubersicht aller Benutzer Chatrooms Projekte
 - [x] Benutzer zu Admin delegieren
 - [x] Benutzer zu Projekten zuweisen ( Batch: Emailadressen)
+- [ ] Benutzer deaktivieren
 
 ### Sonstiges
 
@@ -98,3 +100,20 @@
 
 - [x] Konvertierung von IFC zu GLTF ueber Skripte
 - [ ] ~~Anbindung IFC-Model checker (Jakob Beetz, RWTH Aachen)~~
+
+## Tests
+- [ ] Integration von Tests in CI Pipeline
+- [ ] Unit Tests fuer Backend
+- [ ] Integrationstest mit Backend/Frontend/DB
+- [ ] Demo App
+  - [ ] Browser Bot test
+
+## DevOps
+- [x] Lokale Docker Development umgebung
+- [x] Dockerhub: Intercom-dev & Intercom
+- [x] Docker Release strategie
+  - [ ] automatisierte Changelogs
+
+## Docs
+- [ ] Github Repo fuer Docs
+- [ ] Issue Management
