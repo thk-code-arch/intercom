@@ -1,2 +1,4 @@
 # Ignore everything
 /*
+# Include Changelog
+!/CHANGELOG.md

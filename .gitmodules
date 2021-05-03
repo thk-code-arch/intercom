@@ -1,6 +1,0 @@
-[submodule "development/intercom-backend"]
-	path = development/intercom-backend
-	url = https://github.com/thk-code-arch/intercom-backend.git
-[submodule "development/intercom-frontend"]
-	path = development/intercom-frontend
-	url = https://github.com/thk-code-arch/intercom-frontend.git

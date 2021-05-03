@@ -29,8 +29,8 @@ services:
   dev-intercom-frontend:
     container_name: dev-intercom-frontend
     build:
-        context: .
-        dockerfile: ./intercom-frontend/Dockerfile-dev
+        context: ./intercom-frontend/.
+        dockerfile: Dockerfile-dev
     restart: always
     ports:
       - 8080:8080

@@ -1,8 +1,9 @@
 # Setup Local development environment
 
-1. Clone Repo with submodules
+1. Clone dev repos
    ```sh
-   git clone --recurse-submodules https://github.com/thk-code-arch/intercom.git
+   git clone https://github.com/thk-code-arch/intercom-backend.git
+   git clone https://github.com/thk-code-arch/intercom-frontend.git
    ```
 2. Prepare secrets.env
    ```sh
@@ -18,4 +19,3 @@
    docker exec -it dev-intercom-backend npm run typeorm:migration:run
    docker exec -it dev-intercom-backend npm run seed:run
    ```
-

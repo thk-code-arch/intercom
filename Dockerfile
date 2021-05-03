@@ -25,6 +25,7 @@ USER node
 COPY --chown=node:node --from=intercom /frontend/dist /intercom-frontend
 COPY --chown=node:node --from=intercom /backend/api /app
 COPY --chown=node:node --from=intercom /backend/files /files
+COPY CHANGELOG.md /app/CHANGELOG.md
 
 VOLUME ["/files"]
 # Create app directory
