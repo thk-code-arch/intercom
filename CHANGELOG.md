@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.4] - 2022-05-15
+## [1.2.3] - 2022-05-15
 ### Added
 - func: delete subprojects
 
