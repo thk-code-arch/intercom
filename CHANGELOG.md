@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.3] - 2022-05-15
+### Added
+- func: delete subprojects
+
 ## [1.1.1] - 2020-05-03
 ### Fixed
 -  style: added base style; code pre h1 h2 h3
