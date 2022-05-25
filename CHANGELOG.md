@@ -1,4 +1,25 @@
 # Changelog
+## [1.2.4] - 2022-05-25
+
+added updates22
+
+added vetur files
+
+func: added tab view
+
+fix: chatroom flex sroll
+
+style: list for Subprojects
+
+func: store Subprojects dispatch
+
+test vmodel
+
+fix asc chatlog
+
+func: select subprojects
+
+rm and add projects
 
 ## [1.2.3] - 2022-05-15
 ### Added
