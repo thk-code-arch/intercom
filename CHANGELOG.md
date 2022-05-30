@@ -1,4 +1,19 @@
 # Changelog
+
+## [1.2.5] - 2022-05-30
+
+func: three ifc loader
+
+install: added wasm for ifc import
+
+added IFC Test view
+
+func:added IFCPort
+
+func: added ifcloader for subprojects
+
+style: active viewport button
+
 ## [1.2.4] - 2022-05-25
 
 added updates22
