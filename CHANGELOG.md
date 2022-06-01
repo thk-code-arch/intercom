@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.6] - 2022-06-1
+
+fix: IFC Upload more detail err message
+
+
 ## [1.2.5] - 2022-05-30
 
 func: three ifc loader
