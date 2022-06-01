@@ -2,6 +2,10 @@
 
 ## [1.2.6] - 2022-06-1
 
+fix: changed lights , changed submodel positions
+
+fix: remove Subprojects from scene
+
 fix: IFC Upload more detail err message
 
 
