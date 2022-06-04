@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.2.7] - 2022-06-4
+## [1.2.7] - 2022-06-04
 
 func IFCPort select and move model
 
 func: classic viewport added move/select objects
 
-## [1.2.6] - 2022-06-1
+## [1.2.6] - 2022-06-01
 
 fix: changed lights , changed submodel positions
 
