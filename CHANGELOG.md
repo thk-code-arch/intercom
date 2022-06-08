@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.3.0] - 2022-06-08
+
+### Frontend:
+
+style: edit Subprojects load
+
+func: store and save position
+
+func: save position in store, for server requests
+
+fix: otherCamPostitin undefined error
+
+feat: push & pull Subproject position
+
+style: save button position
+
+### Backend:
+
+migration: added view table
+
+feat: added view module
+
+fix: project file controller param #35
+
 ## [1.2.7] - 2022-06-04
 
 func IFCPort select and move model
