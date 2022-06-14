@@ -12,6 +12,9 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
+          secrets: |
+            "BACKENDDEPLOYKEY=${{ secrets.BACKENDDEPLOYKEY }}"
+            "FRONTENDDEPLOYKEY=${{ secrets.FRONTENDDEPLOYKEY }}"
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
           repository: thkcodearch/intercom
