@@ -3,14 +3,32 @@ FROM node:16-slim as intercom
 RUN apt-get update \
  && apt-get install -y git unzip
 ##
-WORKDIR /frontend
-RUN git clone https://github.com/thk-code-arch/intercom-frontend.git .
-RUN npm install && npm run build
+# build ssh keys
+RUN mkdir /root/.ssh/
+RUN --mount=type=secret,id=FRONTENDDEPLOYKEY \
+  cat /run/secrets/FRONTENDDEPLOYKEY > /root/.ssh/frontend
+RUN --mount=type=secret,id=BACKENDDEPLOYKEY \
+  cat /run/secrets/BACKENDDEPLOYKEY > /root/.ssh/backend
+
+RUN chmod 600 /root/.ssh/frontend && chmod 600 /root/.ssh/backend
+
+RUN touch /root/.ssh/known_hosts
+RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+
 
 WORKDIR /backend
-RUN git clone https://github.com/thk-code-arch/intercom-backend.git .
+RUN ssh-agent bash -c 'ssh-add /root/.ssh/backend; git clone git@github.com:thk-code-arch/intercom-backend.git .'
 RUN npm install -g @nestjs/cli
 RUN cd api && npm install && npm run build
+
+
+
+WORKDIR /frontend
+RUN ssh-agent bash -c 'ssh-add /root/.ssh/frontend; git clone git@github.com:thk-code-arch/intercom-frontend.git .'
+RUN npm install && npm run build
+
+
 
 WORKDIR /ifcopenshell
 # Extract precompiled IFCConvert from IFCOpenBot https://github.com/IfcOpenBot/IfcOpenShell/commits/v0.6.0
