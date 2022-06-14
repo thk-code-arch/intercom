@@ -2,14 +2,21 @@
 ## [1.3.1] - 2022-06-14
 
 ### Frontend:
+
 refactor: viewport connections & cleanup
+
 fix: IFC Viewport, dont move parent project
+
 feat: move existings subprojects
 
 ### Backend:
+
 test: viewport emit implementation
+
 refactor: joining and leaving viewport
+
 refactor: disconnect viewport
+
 feat: updated emit viewport
 
 
