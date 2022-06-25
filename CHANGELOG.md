@@ -1,4 +1,15 @@
 # Changelog
+
+## [1.3.2] - 2022-06-25
+
+### Frontend:
+
+fix: check for existing subprojects, after pulling positions
+
+feat: unload all Subprojects
+
+fix: load initial subproject position, based on parentProject
+
 ## [1.3.1] - 2022-06-14
 
 ### Frontend:
