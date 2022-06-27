@@ -1,4 +1,13 @@
 # Changelog
+## [1.3.3] - 2022-06-27
+
+style: buttons Subprojects
+
+feat: position SubprojectPostitionModal
+
+fix: set new Position
+
+fix: load position when reload
 
 ## [1.3.2] - 2022-06-25
 
