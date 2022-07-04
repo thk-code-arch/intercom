@@ -1,4 +1,29 @@
 # Changelog
+
+## [1.3.4] - 2022-07-04
+
+### Frontend:
+
+feat: added rotation for Subprojects
+
+fix: pulled position checfix: pulled position checkk
+
+feat: IFCPort rotate object
+
+feat: IFCPort rotate Object
+
+feat: load saved Subprojects position list
+
+style: SavedViews add Screenshot
+
+fix: call reload Subprojects on render
+
+style: load Subprojects history list
+
+### Backend:
+
+feat: get list of history subproject positions
+
 ## [1.3.3] - 2022-06-27
 
 style: buttons Subprojects
