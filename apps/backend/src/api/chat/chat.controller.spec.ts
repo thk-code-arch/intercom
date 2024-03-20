@@ -1,0 +1,20 @@
+// Copyright (c) 2021 Steffen Stein <mail@steffenstein.com> For LICENSE see docs/LICENSE
+
+import { Test, TestingModule } from '@nestjs/testing';
+import { ChatController } from './chat.controller';
+
+describe('ChatController', () => {
+  let controller: ChatController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [ChatController],
+    }).compile();
+
+    controller = module.get<ChatController>(ChatController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});

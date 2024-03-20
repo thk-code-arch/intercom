@@ -1,0 +1,45 @@
+@tailwind base;
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  h3 {
+    @apply text-lg;
+  }
+  pre {
+    @apply  p-4 bg-gray-400 rounded-md;
+  }
+  code {
+    @apply text-sm;
+  }
+}
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "din-2014";
+  src: url("../fonts/DIN2014-Regular.ttf");
+}
+.allpointer {
+  pointer-events: all;
+}
+.nopointer {
+  pointer-events: none;
+}
+.splitter {
+  pointer-events: all;
+}
+.embed-responsive-item {
+  height: 100%;
+  width: 100%;
+}
+.the-tooltip {
+  @apply absolute invisible;
+}
+
+.has-tooltip:hover .the-tooltip {
+  @apply z-50 visible;
+}

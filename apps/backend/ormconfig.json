@@ -1,0 +1,19 @@
+{
+  "type": "postgres",
+  "host": "dev-intercom-db",
+  "port": 5432,
+  "username": "icsql",
+  "password": "8n%M75fSkj*QUhav5G",
+  "database": "icwebdb",
+  "entities": [
+    "/app/src/database/entities/models.{ts,js}"
+  ],
+  "migrationsTableName": "migrations",
+  "migrations": [
+    "/app/src/database/migrations/*.{ts,js}"
+  ],
+  "cli": {
+    "migrationsDir": "src/database/migrations"
+  },
+  "ssl": false
+}
