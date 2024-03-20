@@ -13,6 +13,9 @@ import {
 const corsOptions = {
   origin: ['https://' + process.env.IC_CORS, 'http://localhost:8080'],
 };
+
+import { join } from 'path';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -32,8 +35,12 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, document);
 
-  app.useStaticAssets('/files', { prefix: '/files' });
-  app.useStaticAssets('/files/static', { prefix: '/static' });
+  app.useStaticAssets(join(__dirname, '..', '..', 'files'), {
+    prefix: '/files',
+  });
+  app.useStaticAssets(join(__dirname, '..', '..', 'files/static'), {
+    prefix: '/static',
+  });
 
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalFilters(new QueryFailedExceptionFilter());
