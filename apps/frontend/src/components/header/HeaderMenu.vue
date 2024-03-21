@@ -205,12 +205,13 @@
 </template>
 
 <script>
-import BugReport from "./maintenance/BugReport";
-import FixedHeader from "vue-fixed-header";
-import INTERCOM from "../../assets/LOGO_INTERCOM";
+import BugReport from './maintenance/BugReport';
+import FixedHeader from 'vue-fixed-header';
+// TODO frontend : replace fixed header,because warnings in console
+import INTERCOM from '../../assets/LOGO_INTERCOM';
 
 export default {
-  name: "header-menu",
+  name: 'header-menu',
   data() {
     return {
       isOpen: false,
@@ -244,19 +245,19 @@ export default {
     },
     isAdmin() {
       if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes("admin");
+        return this.currentUser.roles.includes('admin');
       }
       return false;
     },
   },
   methods: {
     logOut() {
-      this.$store.dispatch("curproject/unselect");
-      this.$store.dispatch("auth/logout");
-      this.$store.dispatch("viewport/clear");
-      this.$store.dispatch("chatroom/clear");
-      this.$store.dispatch("iosockets/close_sockets");
-      this.$router.push("/login");
+      this.$store.dispatch('curproject/unselect');
+      this.$store.dispatch('auth/logout');
+      this.$store.dispatch('viewport/clear');
+      this.$store.dispatch('chatroom/clear');
+      this.$store.dispatch('iosockets/close_sockets');
+      this.$router.push('/login');
     },
     clickBugReport() {
       this.BugReportisOpen = true;
@@ -266,9 +267,9 @@ export default {
       this.BugReportisOpen = false;
     },
     closeProject() {
-      this.$store.dispatch("curproject/unselect");
-      this.$store.dispatch("viewport/clear");
-      this.$router.push("/projects");
+      this.$store.dispatch('curproject/unselect');
+      this.$store.dispatch('viewport/clear');
+      this.$router.push('/projects');
     },
   },
 };
@@ -281,4 +282,3 @@ export default {
   top: 0;
 }
 </style>
-

@@ -55,14 +55,14 @@
 </template>
 
 <script>
-import Project from "@/models/project";
+import Project from '@/models/project';
 
 export default {
-  name: "select-project",
+  name: 'select-project',
   data: function () {
     return {
-      project: new Project("", ""),
-      selectedProject: "",
+      project: new Project('', ''),
+      selectedProject: '',
       projects: [],
       mainprojects: [],
       subprojects: [],
@@ -75,7 +75,7 @@ export default {
     },
     showaddProject() {
       if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes("admin");
+        return this.currentUser.roles.includes('admin');
       }
       return false;
     },
@@ -86,46 +86,46 @@ export default {
       this.showBackButton = false;
     },
     addProject() {
-      this.$store.dispatch("curproject/addnewProject").then(
+      this.$store.dispatch('curproject/addnewProject').then(
         () => {
-          this.$router.push("/new-project");
+          this.$router.push('/new-project');
         },
         (error) => {
           this.$notify({
-            title: "Ooops...",
+            title: 'Ooops...',
             text:
               (error.response && error.response.data) ||
               error.message ||
               error.toString(),
-            group: "error",
+            group: 'error',
           });
-        }
+        },
       );
     },
     Select: function (project) {
       if (project.sub === undefined || project.sub.length === 0) {
         this.project.id = project.id;
-        this.$store.dispatch("curproject/selectProject", this.project).then(
+        this.$store.dispatch('curproject/selectProject', this.project).then(
           () => {
-            this.$router.push("/view");
+            this.$router.push('/view');
           },
           (error) => {
             this.$notify({
-              title: "Ooops...",
+              title: 'Ooops...',
               text:
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString(),
-              group: "error",
+              group: 'error',
             });
-          }
+          },
         );
       }
       if (project.sub.length !== 0) {
         this.mainprojects = this.projects;
         this.showBackButton = true;
         this.projects = this.subprojects.filter(
-          (p) => p.parentProject === project.id
+          (p) => p.parentProject === project.id,
         );
         project.sub = [];
         this.projects.unshift(project);
@@ -133,32 +133,32 @@ export default {
     },
   },
   mounted() {
-    this.$http.get("project/get_projects").then(
+    this.$http.get('project/get_projects').then(
       (response) => {
         this.projects = response.data.filter((p) => p.parentProject === null);
         this.subprojects = response.data.filter(
-          (p) => p.parentProject !== null
+          (p) => p.parentProject !== null,
         );
         for (var i = 0; i < this.projects.length; i++) {
-          this.projects[i]["sub"] = [];
+          this.projects[i]['sub'] = [];
           const found = this.subprojects.find(
-            (sp) => sp["parentProject"] === this.projects[i].id
+            (sp) => sp['parentProject'] === this.projects[i].id,
           );
           if (found) {
-            this.projects[i]["sub"].push(found.id);
+            this.projects[i]['sub'].push(found.id);
           }
         }
       },
       (error) => {
         this.$notify({
-          title: "Ooops...",
+          title: 'Ooops...',
           text:
             (error.response && error.response.data) ||
             error.message ||
             error.toString(),
-          group: "error",
+          group: 'error',
         });
-      }
+      },
     );
   },
 };
