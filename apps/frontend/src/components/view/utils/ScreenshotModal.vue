@@ -56,7 +56,6 @@
               </svg>
             </button>
           </div>
-          <!-- // TODO REMOVED because of plugin break
           <div class="relative flex-auto p-2" ref="sketch">
             <Editor
               :canvasWidth="size.width"
@@ -68,7 +67,6 @@
 
             <p class="my-4 text-lg leading-relaxed text-gray-600"></p>
           </div>
-        ooter-->
           <div
             class="flex items-center justify-between p-6 border-t border-gray-300 border-solid rounded-b"
           >
@@ -161,8 +159,7 @@
 </template>
 
 <script>
-//// TODO <startup>:  removed pluginm breakks
-//import Editor from 'vue-image-markup';
+import Editor from 'vue-image-markup';
 import projectHeader from '../../../services/project-header';
 
 export default {
@@ -183,7 +180,7 @@ export default {
       },
     };
   },
-  //components: { Editor },
+  components: { Editor },
 
   computed: {
     screenshotDataUrl() {
