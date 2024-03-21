@@ -1,4 +1,7 @@
-apps/backend/files/*
+
+/db/*
+/files/*
+
 
 .output
 .data

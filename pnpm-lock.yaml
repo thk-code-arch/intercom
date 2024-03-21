@@ -85,6 +85,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      multer:
+        specifier: 1.4.5-lts.1
+        version: 1.4.5-lts.1
       nodemailer:
         specifier: ^6.5.0
         version: 6.9.13
@@ -109,6 +112,9 @@ importers:
       sharp:
         specifier: ^0.33.2
         version: 0.33.2
+      socket.io:
+        specifier: ^4.7.5
+        version: 4.7.5
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(pg@8.11.3)(ts-node@10.9.2)
@@ -131,9 +137,6 @@ importers:
       '@types/node':
         specifier: ^20.11.30
         version: 20.11.30
-      '@types/socket.io':
-        specifier: ^3.0.2
-        version: 3.0.2
       '@types/supertest':
         specifier: ^2.0.10
         version: 2.0.16
@@ -2991,17 +2994,6 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
       '@types/node': 20.11.30
-
-  /@types/socket.io@3.0.2:
-    resolution: {integrity: sha512-pu0sN9m5VjCxBZVK8hW37ZcMe8rjn4HHggBN5CbaRTvFwv5jOmuIRZEuddsBPa9Th0ts0SIo3Niukq+95cMBbQ==}
-    deprecated: This is a stub types definition. socket.io provides its own type definitions, so you do not need this installed.
-    dependencies:
-      socket.io: 4.7.5
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: true
 
   /@types/stack-utils@2.0.3:
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -11117,6 +11109,19 @@ packages:
       object-assign: 4.1.1
       type-is: 1.6.18
       xtend: 4.0.2
+
+  /multer@1.4.5-lts.1:
+    resolution: {integrity: sha512-ywPWvcDMeH+z9gQq5qYHCCy+ethsk4goepZ45GLD63fOu0YcNecQxi64nDs3qluZB+murG3/D4dJ7+dGctcCQQ==}
+    engines: {node: '>= 6.0.0'}
+    dependencies:
+      append-field: 1.0.0
+      busboy: 1.6.0
+      concat-stream: 1.6.2
+      mkdirp: 0.5.6
+      object-assign: 4.1.1
+      type-is: 1.6.18
+      xtend: 4.0.2
+    dev: false
 
   /multicast-dns-service-types@1.1.0:
     resolution: {integrity: sha512-cnAsSVxIDsYt0v7HmC0hWZFwwXSh+E6PgCrREDuN/EsjgLwA5XRmlMHhSiDPrt6HxY1gTivEa/Zh7GtODoLevQ==}

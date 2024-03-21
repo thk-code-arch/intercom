@@ -50,6 +50,7 @@
     "gravatar": "^1.8.1",
     "handlebars": "^4.7.8",
     "lodash": "^4.17.21",
+    "multer": "1.4.5-lts.1",
     "nodemailer": "^6.5.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -58,6 +59,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.2",
+    "socket.io": "^4.7.5",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
@@ -67,7 +69,6 @@
     "@types/express": "^4.17.11",
     "@types/jest": "^29.0.0",
     "@types/node": "^20.11.30",
-    "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",

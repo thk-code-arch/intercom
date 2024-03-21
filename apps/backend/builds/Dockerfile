@@ -1,18 +1,34 @@
-# build local intercom-frontend for same domain delivery
-FROM node:18-slim as intercom
+#dev dockerfile for intercom-backend
+FROM node:18-slim as builder
 RUN apt-get update \
  && apt-get install -y git unzip
-##
-COPY . .
-# Download precompiled IFCConvert from IFCOpenBot https://github.com/IfcOpenBot/IfcOpenShell/commits/v0.6.0
-RUN unzip IfcConvert.zip && rm IfcConvert.zip
 
-# keep it small
+WORKDIR /build
+
+COPY ./apps/backend/builds/IfcConvert.zip .
+RUN unzip IfcConvert.zip -d /usr/local/bin && rm IfcConvert.zip
+
+# Stage 2: Setup the intercom-backend
 FROM node:18-slim as intercom-backend
-COPY --from=intercom /IfcConvert /usr/local/bin/IfcConvert
+COPY --from=builder /usr/local/bin/IfcConvert /usr/local/bin/IfcConvert
+RUN npm install -g pnpm nodemon
 
-# Create app directory
+
+
 WORKDIR /app
-RUN npm install -g @nestjs/cli nodemon
+
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+COPY apps/backend/package.json apps/backend/
+# Install dependencies
+RUN pnpm install --filter backend --frozen-lockfile
+
+# Copy the backend application source
+COPY apps/backend ./apps/backend
+
+
+WORKDIR /app/apps/backend
+
 EXPOSE 3000
-CMD uname -m && npm install && npm run start:dev
+
+# Command to run the app, assuming 'start:dev' is the script in your package.json
+CMD ["pnpm", "run", "start:dev"]

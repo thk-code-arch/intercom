@@ -1,9 +1,29 @@
+# Use a specific version of node to ensure consistency across environments
 FROM node:16-slim
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
 # Create app directory
-WORKDIR /usr/src/app
-RUN apt update && apt install -y git
-RUN npm install -g serve
-COPY . .
-RUN git show --quiet HEAD
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml files (or package-lock.json if not using pnpm)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Install dependencies using pnpm
+RUN pnpm install --filter frontend --frozen-lockfile
+
+
+COPY apps/frontend ./apps/frontend
+
+WORKDIR /app/apps/frontend
+
 EXPOSE 8080
-CMD npm install && npm run serve
+
+RUN pnpm install
+
+# Serve the static files with `serve`
+# The `serve` command should point to the build directory where your static files are located after the build
+
+CMD ["pnpm", "run", "serve"]
+#CMD ["tail", "-f", "/dev/null"]
