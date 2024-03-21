@@ -56,7 +56,7 @@
               </svg>
             </button>
           </div>
-          <!--body-->
+          <!-- // TODO REMOVED because of plugin break
           <div class="relative flex-auto p-2" ref="sketch">
             <Editor
               :canvasWidth="size.width"
@@ -68,7 +68,7 @@
 
             <p class="my-4 text-lg leading-relaxed text-gray-600"></p>
           </div>
-          <!--footer-->
+        ooter-->
           <div
             class="flex items-center justify-between p-6 border-t border-gray-300 border-solid rounded-b"
           >
@@ -160,30 +160,30 @@
   </div>
 </template>
 
-
 <script>
-import Editor from "vue-image-markup";
-import projectHeader from "../../../services/project-header";
+//// TODO <startup>:  removed pluginm breakks
+//import Editor from 'vue-image-markup';
+import projectHeader from '../../../services/project-header';
 
 export default {
-  name: "ScreenshotModal",
+  name: 'ScreenshotModal',
 
   data() {
     return {
       showModal: false,
-      currentActiveMethod: "selectMode",
-      description: "",
+      currentActiveMethod: 'selectMode',
+      description: '',
       text: {
-        fontFamily: "Verdana",
-        fill: "red",
+        fontFamily: 'Verdana',
+        fill: 'red',
       },
       pen: {
-        stroke: "red",
+        stroke: 'red',
         strokeWidth: 2,
       },
     };
   },
-  components: { Editor },
+  //components: { Editor },
 
   computed: {
     screenshotDataUrl() {
@@ -191,8 +191,8 @@ export default {
     },
     size() {
       const size = new Object();
-      size.height = "600";
-      size.width = "1200";
+      size.height = '600';
+      size.width = '1200';
       // TODO SET Sketch Editor size based on screen Size
       return size;
     },
@@ -209,11 +209,11 @@ export default {
       const message = `![SavedView](${
         this.$files_url + thumbnail
       } "${description}")`;
-      this.$store.dispatch("chatroom/CHAT_sendmessage", message);
+      this.$store.dispatch('chatroom/CHAT_sendmessage', message);
     },
     toggleModal() {
-      this.$emit("toggleScreenshotModal");
-      this.$emit("getScreenshots");
+      this.$emit('toggleScreenshotModal');
+      this.$emit('getScreenshots');
     },
     async uploadImage() {
       const base64 = await this.$refs.editor.saveImage();
@@ -224,31 +224,31 @@ export default {
           var today = new Date();
           var date =
             today.getFullYear() +
-            "-" +
+            '-' +
             (today.getMonth() + 1) +
-            "-" +
+            '-' +
             today.getDate();
           var time =
             today.getHours() +
-            "-" +
+            '-' +
             today.getMinutes() +
-            "-" +
+            '-' +
             today.getSeconds();
           const file = new File([blob], `${date}-${time}.png`);
-          fd.append("file", file);
-          fd.append("description", this.description);
-          fd.append("projectId", projectHeader());
-          this.$http.post("storage/upload_project_screenshot", fd).then(
+          fd.append('file', file);
+          fd.append('description', this.description);
+          fd.append('projectId', projectHeader());
+          this.$http.post('storage/upload_project_screenshot', fd).then(
             (response) => {
               this.broadcastImageInChat(
                 response.data.thumbnail,
-                response.data.description
+                response.data.description,
               );
               this.toggleModal();
             },
             (error) => {
               this.content = error;
-            }
+            },
           );
         });
     },

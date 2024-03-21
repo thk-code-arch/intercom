@@ -1,5 +1,5 @@
 # Use a specific version of node to ensure consistency across environments
-FROM node:16-slim
+FROM node:18-slim
 
 # Install pnpm globally
 RUN npm install -g pnpm
@@ -11,7 +11,6 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies using pnpm
-RUN pnpm install --filter frontend --frozen-lockfile
 
 
 COPY apps/frontend ./apps/frontend
@@ -20,7 +19,7 @@ WORKDIR /app/apps/frontend
 
 EXPOSE 8080
 
-RUN pnpm install
+RUN pnpm install --shamefully-hoist
 
 # Serve the static files with `serve`
 # The `serve` command should point to the build directory where your static files are located after the build
