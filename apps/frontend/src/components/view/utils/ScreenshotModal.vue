@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import Editor from 'vue-image-markup';
+import Editor from './markup/Editor.vue';
 import projectHeader from '../../../services/project-header';
 
 export default {
