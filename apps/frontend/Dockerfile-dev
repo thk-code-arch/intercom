@@ -24,5 +24,5 @@ RUN pnpm install --shamefully-hoist
 # Serve the static files with `serve`
 # The `serve` command should point to the build directory where your static files are located after the build
 
-CMD ["pnpm", "run", "serve"]
+CMD ["pnpm", "run", "dev"]
 #CMD ["tail", "-f", "/dev/null"]
