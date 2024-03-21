@@ -32,17 +32,20 @@ RUN pnpm run build
 
 # Stage 3: Setup intercom
 FROM node:18-slim
+RUN npm install -g pnpm
 COPY --from=builder /usr/local/bin/IfcConvert /usr/local/bin/IfcConvert
 
 
 USER node
 
-COPY --chown=node:node --from=intercom /app/apps/frontend/dist /intercom-frontend
-COPY --chown=node:node --from=intercom /app/apps/backend/api /app
-COPY CHANGELOG.md /app/CHANGELOG.md
-
-
-
 WORKDIR /app
+
+# copy /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc /app/CHANGELOG.md .
+COPY --chown=node:node --from=intercom /app/node_modules /app/node_modules
+COPY --chown=node:node --from=intercom /app/apps/frontend/dist /intercom-frontend
+COPY --chown=node:node --from=intercom /app/apps/backend /app/apps/backend
+
+
+WORKDIR /app/apps/backend
 EXPOSE 3000
-CMD pnpm run pretypeorm && pnpm run typeorm:migration:run && pnpm run start:prod
+CMD ["pnpm", "run", "start:prod"]
