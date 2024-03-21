@@ -109,7 +109,7 @@ export default {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(
         this.container.clientWidth,
-        this.container.clientHeight
+        this.container.clientHeight,
       );
       // selectingModelsColor
       this.highlightMaterial = new THREE.MeshPhongMaterial({
@@ -134,7 +134,7 @@ export default {
       this.container = this.$refs.sceneContainer;
       this.renderer.setSize(
         this.container.clientWidth,
-        this.container.clientHeight
+        this.container.clientHeight,
       );
       this.camera.aspect =
         this.container.clientWidth / this.container.clientHeight;
@@ -185,7 +185,7 @@ export default {
             myText.position.y = gltf.scene.position.y - 3;
             gltf.scene.add(myText);
             this.scene.add(gltf.scene);
-          }
+          },
         );
       }
     },
@@ -201,7 +201,7 @@ export default {
               console.log(error);
               console.log(ifc);
               const parentProject = this.scene.children.find((x) =>
-                x.name.match(/projectId/)
+                x.name.match(/projectId/),
               );
               console.log('parriet', parentProject);
               ifc.name = `subprojectId:${subproject.id}`;
@@ -226,7 +226,7 @@ export default {
 
               this.scene.add(ifc.mesh);
               this.updateCamera();
-            }
+            },
           );
         } catch (err) {
           console.log('Error loading IFC.');
@@ -295,7 +295,7 @@ export default {
 
             this.scene.add(ifc.mesh);
             this.render();
-          }
+          },
         );
       } catch (err) {
         console.error('Error loading IFC.');
@@ -337,7 +337,7 @@ export default {
       this.render();
       this.$store.dispatch(
         'viewport/imgStore',
-        this.renderer.domElement.toDataURL()
+        this.renderer.domElement.toDataURL(),
       );
     },
     render() {
@@ -358,7 +358,7 @@ export default {
     pointerDown() {
       const intersects = this.raycaster.intersectObjects(
         this.scene.children,
-        false
+        false,
       );
       console.log('pointerDown', intersects);
       var pIntersect = new THREE.Vector3();
@@ -397,7 +397,7 @@ export default {
     pullSpPositions() {
       this.$http
         .get(
-          `/view/get_selectedsubprojects/${this.$store.state.curproject.theproject.id}`
+          `/view/get_selectedsubprojects/${this.$store.state.curproject.theproject.id}`,
         )
         .then(
           (response) => {
@@ -405,11 +405,11 @@ export default {
             if (response.data.selectedSubprojects.length > 0) {
               console.log(
                 'pulllength',
-                response.data.selectedSubprojects.length
+                response.data.selectedSubprojects.length,
               );
               return this.$store.dispatch(
                 'viewport/pullSubprojectPositions',
-                response.data.selectedSubprojects
+                response.data.selectedSubprojects,
               );
             }
           },
@@ -418,7 +418,7 @@ export default {
               (error.response && error.response.data) ||
               error.message ||
               error.toString();
-          }
+          },
         );
     },
   },
@@ -435,7 +435,7 @@ export default {
         return x.id;
       });
       const rmProjects = this.loadedSubprojects.filter(
-        (x) => !allowedProjects.includes(x)
+        (x) => !allowedProjects.includes(x),
       );
       console.log('remove', rmProjects, 'allowed', allowedProjects);
       this.removeSubproject(rmProjects);
