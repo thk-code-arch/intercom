@@ -377,19 +377,18 @@ export default {
       this.$store.dispatch('viewport/setowncamPos', this.camPos);
       this.render();
     }, 10), // Debounce for 100ms
+
     render: debounce(function () {
       this.renderer.render(this.scene, this.camera);
     }, 10), // Debounce for 50ms
 
     takeScreenshot() {
-      this.render();
-
-      this.$nextTick(() => {
-        // Ensure the rendering process is completed before capturing the screenshot
-        const screenshot = this.renderer.domElement.toDataURL();
-        console.log('takeScreenshot', screenshot);
-        this.$store.dispatch('viewport/imgStore', screenshot);
-      });
+      //rednder without debounce
+      this.renderer.render(this.scene, this.camera);
+      this.$store.dispatch(
+        'viewport/imgStore',
+        this.renderer.domElement.toDataURL(),
+      );
     },
 
     pointerMove(event) {
