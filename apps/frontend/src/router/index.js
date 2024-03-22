@@ -1,109 +1,107 @@
-// Copyright (c) 2021 Steffen Stein <mail@steffenstein.com> For LICENSE see docs/LICENSE
-
-import Vue from "vue";
-import Router from "vue-router";
-import Projects from "../views/Projects.vue";
-import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import DirectLogin from "../views/DirectLogin.vue";
+import Vue from 'vue';
+import Router from 'vue-router';
+import Projects from '../views/Projects.vue';
+import Home from '../views/Home.vue';
+import Login from '../views/Login.vue';
+import DirectLogin from '../views/DirectLogin.vue';
 
 Vue.use(Router);
 
 export const router = new Router({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/",
+      path: '/',
       component: Home,
     },
     {
-      path: "/login",
+      path: '/login',
       component: Login,
     },
     {
-      path: "/login/direct/:user/:pass",
+      path: '/login/direct/:user/:pass',
       component: DirectLogin,
     },
     {
-      path: "/about",
-      name: "About",
+      path: '/about',
+      name: 'About',
       // lazy-loaded
-      component: () => import("../views/About.vue"),
+      component: () => import('../views/About.vue'),
     },
     {
-      path: "/view",
-      name: "TheView",
+      path: '/view',
+      name: 'TheView',
       // lazy-loaded
-      component: () => import("../views/TheView.vue"),
+      component: () => import('../views/TheView.vue'),
     },
     {
-      path: "/chat",
-      name: "Chat",
+      path: '/chat',
+      name: 'Chat',
       // lazy-loaded
-      component: () => import("../views/Chat.vue"),
+      component: () => import('../views/Chat.vue'),
     },
     {
-      path: "/learning",
-      name: "Learning",
-      redirect: "/learning/list",
+      path: '/learning',
+      name: 'Learning',
+      redirect: '/learning/list',
       // lazy-loaded
-      component: () => import("../views/Learning.vue"),
+      component: () => import('../views/Learning.vue'),
       children: [
         {
-          path: "list",
-          component: () => import("../components/learning/list-learnings.vue"),
+          path: 'list',
+          component: () => import('../components/learning/list-learnings.vue'),
         },
         {
-          path: "show/:id",
-          component: () => import("../components/learning/show-learning.vue"),
+          path: 'show/:id',
+          component: () => import('../components/learning/show-learning.vue'),
         },
         {
-          path: "add",
-          component: () => import("../components/learning/add-learning.vue"),
+          path: 'add',
+          component: () => import('../components/learning/add-learning.vue'),
         },
       ],
     },
     {
-      path: "/profile",
-      name: "profile",
+      path: '/profile',
+      name: 'profile',
       // lazy-loaded
-      component: () => import("../views/Profile.vue"),
+      component: () => import('../views/Profile.vue'),
     },
     {
-      path: "/admin",
-      name: "admin",
+      path: '/admin',
+      name: 'admin',
       // lazy-loaded
-      component: () => import("../views/Admin.vue"),
+      component: () => import('../views/Admin.vue'),
     },
     {
-      path: "/new-project",
-      name: "new-project",
+      path: '/new-project',
+      name: 'new-project',
       // lazy-loaded
-      component: () => import("../views/ProjectSettings.vue"),
+      component: () => import('../views/ProjectSettings.vue'),
     },
     {
-      path: "/project-settings",
-      name: "project-settings",
+      path: '/project-settings',
+      name: 'project-settings',
       // lazy-loaded
-      component: () => import("../views/ProjectSettings.vue"),
+      component: () => import('../views/ProjectSettings.vue'),
     },
     {
-      path: "/projects",
-      name: "projects",
+      path: '/projects',
+      name: 'projects',
       component: Projects,
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login"];
+  const publicPages = ['/login'];
   const authRequired = !to.path.startsWith(publicPages);
-  const loggedIn = localStorage.getItem("user");
+  const loggedIn = localStorage.getItem('user');
 
   // trying to access a restricted page + not logged in
   // redirect to login page
   if (authRequired && !loggedIn) {
-    next("/login");
+    next('/login');
   } else {
     next();
   }
