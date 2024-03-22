@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.1] - 2024-03-22
+
+### Frontend:
+- Removed fixed Header, implemented a responsive header alternative with a dropdown menu.
+- Upgraded Tailwind to version 3.
+- Refactored IFC Viewer code
+
+### Backend:
+- Fixed bug in Subproject deletion, and get learning by id
+
+
 ## [2.0.0] - 2024-03-21
 
 ### Frontend:
