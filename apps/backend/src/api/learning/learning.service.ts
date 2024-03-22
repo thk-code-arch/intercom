@@ -29,8 +29,8 @@ export class LearningService {
     learning.user = <any>userId;
     return this.learningRepository.save(learning);
   }
-  async getLearningById(learningId: any) {
-    // TODO <startup>: check for bug
-    return this.learningRepository.findOne(learningId);
+
+  async getLearningById(learningId: number): Promise<Learning | undefined> {
+    return this.learningRepository.findOne({ where: { id: learningId } });
   }
 }

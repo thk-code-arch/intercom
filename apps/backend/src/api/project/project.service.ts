@@ -163,9 +163,8 @@ export class ProjectService {
     }
 
     const delProject = await this.projectsRepository.softDelete(getProject.id);
-    // TODO <startup>: check for bug
     const getChatroom = await this.chatroomRepository.findOne({
-      where: { project: getProject },
+      where: { project: { id: getProject.id } },
     });
     const deleteChatroom = await this.chatroomRepository.softDelete(
       getChatroom.id,
