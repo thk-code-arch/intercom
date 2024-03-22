@@ -6,34 +6,55 @@
   ></div>
 </template>
 <script>
-import * as THREE from 'three';
+import {
+  PerspectiveCamera,
+  Scene,
+  Color,
+  DirectionalLight,
+  AmbientLight,
+  WebGLRenderer,
+  Plane,
+  Vector2,
+  Vector3,
+  MeshPhongMaterial,
+  Raycaster,
+  Box3,
+} from 'three';
+
 import SpriteText from 'three-spritetext';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { IFCLoader } from 'three/examples/jsm/loaders/IFCLoader.js';
 import authHeader from '@/services/auth-header';
 import projectHeader from '@/services/project-header';
+import { debounce } from 'lodash';
 
 export default {
   name: 'ifc-port',
   data() {
     return {
       container: null,
-      scene: null,
+      scene: new Scene(),
       camera: null,
       controls: null,
       renderer: null,
-      vector: null,
       camPos: '',
       avatar: null,
       highlightMaterial: null,
       isDragging: false,
       dragObject: null,
-      plane: null,
-      pNormal: null,
-      raycaster: null,
-      shift: null,
+
+      // create Vector to calculate Camera Direction
+
+      plane: new Plane(),
+      pNormal: new Vector3(0, 1, 0),
+      raycaster: new Raycaster(),
+      shift: new Vector3(),
+      vector: new Vector3(),
       found: null,
+      mouse: new Vector2(),
+      planeIntersect: new Vector3(),
+      pIntersect: new Vector3(),
     };
   },
   computed: {
@@ -57,6 +78,19 @@ export default {
     hasSubproject() {
       return !!this.$store.state.curproject.theproject.subprojects;
     },
+    loadedSubprojectIds() {
+      return this.scene.children
+        .filter((x) => x.name.startsWith('subprojectId:'))
+        .map((x) => parseInt(x.name.replace('subprojectId:', '')));
+    },
+    allowedSubprojectIds() {
+      return this.selectedSubprojects.map((x) => x.id);
+    },
+    subprojectsToRemove() {
+      return this.loadedSubprojectIds.filter(
+        (id) => !this.allowedSubprojectIds.includes(id),
+      );
+    },
   },
   methods: {
     init() {
@@ -68,21 +102,20 @@ export default {
       const aspect = this.container.clientWidth / this.container.clientHeight;
       const near = 0.1; // the near clipping plane
       const far = 1000; // the far clipping plane
-      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      const camera = new PerspectiveCamera(fov, aspect, near, far);
       this.camera = camera;
 
-      //Scene
-      this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color('#eeeeee');
+      //Scene set color
+      this.scene.background = new Color('#eeeeee');
 
       // add lights
-      const directionalLight1 = new THREE.DirectionalLight(0xffeeff, 0.8);
+      const directionalLight1 = new DirectionalLight(0xffeeff, 0.8);
       directionalLight1.position.set(1, 1, 1);
       this.scene.add(directionalLight1);
-      const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+      const directionalLight2 = new DirectionalLight(0xffffff, 0.8);
       directionalLight2.position.set(-1, 0.5, -1);
       this.scene.add(directionalLight2);
-      const ambientLight = new THREE.AmbientLight(0xffffee, 0.25);
+      const ambientLight = new AmbientLight(0xffffee, 0.25);
       this.scene.add(ambientLight);
       this.loadModel();
 
@@ -95,12 +128,12 @@ export default {
         BOTTOM: 83, // down arrow
       };
       // create renderer
-      this.renderer = new THREE.WebGLRenderer({ antialias: true });
+      this.renderer = new WebGLRenderer({ antialias: true });
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.outputEncoding = true;
       this.renderer.gammaFactor = 2.2;
       this.renderer.shadowMap.enabled = true;
-      // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+      // this.renderer.shadowMap.type = PCFSoftShadowMap; // default PCFShadowMap
       this.container.appendChild(this.renderer.domElement);
 
       // set aspect ratio to match the new browser window aspect ratio
@@ -112,21 +145,14 @@ export default {
         this.container.clientHeight,
       );
       // selectingModelsColor
-      this.highlightMaterial = new THREE.MeshPhongMaterial({
+      this.highlightMaterial = new MeshPhongMaterial({
         color: 0x00b1ff,
         depthTest: false,
         transparent: true,
         opacity: 0.3,
       });
 
-      //moving objects intersecting
-      this.plane = new THREE.Plane();
-      this.pNormal = new THREE.Vector3(0, 1, 0);
-      this.raycaster = new THREE.Raycaster();
-      this.shift = new THREE.Vector3();
-
       // create Vector to calculate Camera Direction
-      this.vector = new THREE.Vector3();
       this.render();
     },
 
@@ -141,26 +167,33 @@ export default {
       this.camera.updateProjectionMatrix();
       this.render();
     },
+
     insertAvatar() {
-      // sample Box from docs
-      Array.prototype.forEach.call(this.connectedPlayers, (player) => {
+      this.connectedPlayers.forEach((player) => {
         this.loadAvatar(1, player.username);
       });
     },
     updateAvatar() {
-      Array.prototype.forEach.call(this.connectedPlayers, (player) => {
+      this.connectedPlayers.forEach((player) => {
         this.moveObject(player.username, player.position);
       });
     },
-    updateObjectPostition(postionsArray) {
-      Array.prototype.forEach.call(postionsArray, (posi) => {
+
+    updateObjectPostition(positionsArray) {
+      positionsArray.forEach((posi) => {
         this.moveSubproject(posi);
       });
     },
+
     insertSubproject(addSubproject) {
-      // sample Box from docs
-      Array.prototype.forEach.call(addSubproject, (sb) => {
+      addSubproject.forEach((sb) => {
         this.loadSubproject(sb);
+      });
+    },
+
+    removeSubproject(rmSubprojectIds) {
+      rmSubprojectIds.forEach((subprojectId) => {
+        this.unloadSubproject(subprojectId);
       });
     },
     removeSubproject(rmSubproject) {
@@ -190,7 +223,6 @@ export default {
       }
     },
     async loadSubproject(subproject) {
-      console.log('haeaeea', subproject);
       if (!this.scene.getObjectByName(`subprojectId:${subproject.id}`)) {
         const ifcLoader = new IFCLoader();
         ifcLoader.setRequestHeader({ Authorization: authHeader() });
@@ -269,9 +301,9 @@ export default {
         ifcLoader.load(
           `${this.$app_url}/api/project/get_projectfileifc/${projectHeader()}`,
           (ifc) => {
-            const box = new THREE.Box3().setFromObject(ifc.mesh);
-            const size = box.getSize(new THREE.Vector3()).length();
-            const center = box.getCenter(new THREE.Vector3());
+            const box = new Box3().setFromObject(ifc.mesh);
+            const size = box.getSize(new Vector3()).length();
+            const center = box.getCenter(new Vector3());
 
             ifc.name = 'projectId';
 
@@ -333,6 +365,22 @@ export default {
       this.$store.dispatch('viewport/setowncamPos', this.camPos);
       this.render();
     },
+    updateCamera: debounce(function () {
+      this.updateAvatar();
+      this.updateObjectPostition(this.selectedSubprojects);
+      this.camPos = {
+        x: this.camera.position.x.toFixed(2),
+        y: this.camera.position.y.toFixed(2),
+        z: this.camera.position.z.toFixed(2),
+        dir: this.roundNumbers(this.camera.getWorldDirection(this.vector)),
+      };
+      this.$store.dispatch('viewport/setowncamPos', this.camPos);
+      this.render();
+    }, 10), // Debounce for 100ms
+    render: debounce(function () {
+      this.renderer.render(this.scene, this.camera);
+    }, 10), // Debounce for 50ms
+
     takeScreenshot() {
       this.render();
       this.$store.dispatch(
@@ -340,18 +388,14 @@ export default {
         this.renderer.domElement.toDataURL(),
       );
     },
-    render() {
-      this.renderer.render(this.scene, this.camera);
-    },
+
     pointerMove(event) {
-      const mouse = new THREE.Vector2();
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      this.raycaster.setFromCamera(mouse, this.camera);
-      const planeIntersect = new THREE.Vector3();
+      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      this.raycaster.setFromCamera(this.mouse, this.camera);
       if (this.isDragging) {
-        this.raycaster.ray.intersectPlane(this.plane, planeIntersect);
-        this.dragObject.position.addVectors(planeIntersect, this.shift);
+        this.raycaster.ray.intersectPlane(this.plane, this.planeIntersect);
+        this.dragObject.position.addVectors(this.planeIntersect, this.shift);
         this.updateCamera();
       }
     },
@@ -361,14 +405,16 @@ export default {
         false,
       );
       console.log('pointerDown', intersects);
-      var pIntersect = new THREE.Vector3();
       if (intersects.length) {
         this.found = intersects[0];
         //dont move parent Project
         if (this.found.object.name !== 'projectId') {
           this.controls.enabled = false;
-          pIntersect.copy(this.found.point);
-          this.plane.setFromNormalAndCoplanarPoint(this.pNormal, pIntersect);
+          this.pIntersect.copy(this.found.point);
+          this.plane.setFromNormalAndCoplanarPoint(
+            this.pNormal,
+            this.pIntersect,
+          );
           this.shift.subVectors(this.found.object.position, this.found.point);
           this.isDragging = true;
           this.dragObject = this.found.object;
@@ -380,7 +426,6 @@ export default {
     pointerUp() {
       if (this.isDragging) {
         this.isDragging = false;
-        console.log('drgging', this.dragObject.position);
         if (this.dragObject.name.match(/subprojectId/)) {
           this.$store.dispatch('viewport/setSuprojectPosition', {
             id: parseInt(this.dragObject.name.replace('subprojectId:', '')),
@@ -429,19 +474,13 @@ export default {
       }
       this.updateCamera();
     },
-    selectedSubprojects() {
-      this.insertSubproject(this.selectedSubprojects);
-      const allowedProjects = this.selectedSubprojects.map((x) => {
-        return x.id;
-      });
-      const rmProjects = this.loadedSubprojects.filter(
-        (x) => !allowedProjects.includes(x),
-      );
-      console.log('remove', rmProjects, 'allowed', allowedProjects);
-      this.removeSubproject(rmProjects);
-
-      this.updateObjectPostition(this.selectedSubprojects);
-      this.updateCamera();
+    selectedSubprojects(newVal, oldVal) {
+      if (newVal.length !== oldVal.length) {
+        this.insertSubproject(newVal);
+        this.removeSubproject(this.subprojectsToRemove);
+        this.updateObjectPostition(newVal);
+        this.updateCamera();
+      }
     },
     othercamPos() {
       // watch it
