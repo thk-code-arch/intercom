@@ -383,10 +383,13 @@ export default {
 
     takeScreenshot() {
       this.render();
-      this.$store.dispatch(
-        'viewport/imgStore',
-        this.renderer.domElement.toDataURL(),
-      );
+
+      this.$nextTick(() => {
+        // Ensure the rendering process is completed before capturing the screenshot
+        const screenshot = this.renderer.domElement.toDataURL();
+        console.log('takeScreenshot', screenshot);
+        this.$store.dispatch('viewport/imgStore', screenshot);
+      });
     },
 
     pointerMove(event) {
