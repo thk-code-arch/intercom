@@ -1,4 +1,6 @@
 module.exports = {
+  content: ['./public/**/*.html', './src/**/*.{vue,js,ts}', './index.html'],
+
   important: true,
   theme: {
     fontFamily: {
@@ -7,7 +9,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        'codearch': {
+        codearch: {
           50: '#F2FBFF',
           100: '#E6F7FF',
           200: '#BFECFF',
@@ -17,29 +19,28 @@ module.exports = {
           600: '#009FE6',
           700: '#006A99',
           800: '#005073',
-          900: '#00354D'
-            },
+          900: '#00354D',
+        },
       },
       margin: {
-        '96': '24rem',
-        '128': '32rem',
+        96: '24rem',
+        128: '32rem',
       },
       zIndex: {
-         '60': '60',
-        }
+        60: '60',
+      },
     },
     container: {
-        center: true,
+      center: true,
       screens: {
-         sm: "100%",
-         md: "100%",
-         lg: "1024px",
-         xl: "1280px"
-      }
-    }
-
+        sm: '100%',
+        md: '100%',
+        lg: '1024px',
+        xl: '1280px',
+      },
+    },
   },
   variants: {
-    opacity: ['responsive', 'hover']
-  }
-}
+    opacity: ['responsive', 'hover'],
+  },
+};

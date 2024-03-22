@@ -81,56 +81,6 @@
               v-if="isOpen"
               class="absolute right-0 z-40 w-48 py-2 mt-2 bg-white rounded-lg shadow-xl"
             >
-              <router-link
-                v-on:click.native="isOpen = false"
-                to="/profile"
-                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white"
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="inline-block w-5 h-5 text-black align-middle fill-current"
-                >
-                  <path
-                    d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"
-                  ></path>
-                </svg>
-                Profile settings
-              </router-link>
-              <router-link
-                v-on:click.native="isOpen = false"
-                to="/admin"
-                v-if="isAdmin"
-                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white"
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="inline-block w-5 h-5 text-black align-middle fill-current"
-                >
-                  <path
-                    d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"
-                  ></path>
-                </svg>
-                Admin
-              </router-link>
-              <router-link
-                to="/login"
-                v-on:click.native="logOut()"
-                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white"
-              >
-                <svg
-                  class="inline-block w-5 h-5 text-black align-middle fill-current"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                Logout
-              </router-link>
               <div
                 v-on:click="clickBugReport()"
                 class="w-full px-4 py-2 text-white outline-none cursor-pointer bg-codearch-500"
@@ -145,6 +95,53 @@
                   />
                 </svg>
                 Bug Report
+              </div>
+              <div
+                @click="goTo('/profile')"
+                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white cursor-pointer"
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="inline-block w-5 h-5 text-black align-middle fill-current"
+                >
+                  <path
+                    d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"
+                  ></path>
+                </svg>
+                Profile settings
+              </div>
+              <div
+                @click="goTo('/admin')"
+                v-if="isAdmin"
+                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white cursor-pointer"
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="inline-block w-5 h-5 text-black align-middle fill-current"
+                >
+                  <path
+                    d="M10 2a5 5 0 00-5 5v2a2 2 0 00-2 2v5a2 2 0 002 2h10a2 2 0 002-2v-5a2 2 0 00-2-2H7V7a3 3 0 015.905-.75 1 1 0 001.937-.5A5.002 5.002 0 0010 2z"
+                  ></path>
+                </svg>
+                Admin
+              </div>
+              <div
+                @click="logOut()"
+                class="block px-4 py-2 text-gray-800 hover:bg-codearch-400 hover:text-white cursor-pointer"
+              >
+                <svg
+                  class="inline-block w-5 h-5 text-black align-middle fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                Logout
               </div>
             </div>
           </div>
@@ -206,7 +203,7 @@
 
 <script>
 import BugReport from './maintenance/BugReport';
-import FixedHeader from 'vue-fixed-header';
+import FixedHeader from './FixedHeader.vue';
 // TODO frontend : replace fixed header,because warnings in console
 import INTERCOM from '../../assets/LOGO_INTERCOM';
 
@@ -251,13 +248,17 @@ export default {
     },
   },
   methods: {
+    goTo(url) {
+      this.isOpen = false;
+      this.$router.push(url);
+    },
+
     logOut() {
       this.$store.dispatch('curproject/unselect');
       this.$store.dispatch('auth/logout');
       this.$store.dispatch('viewport/clear');
       this.$store.dispatch('chatroom/clear');
       this.$store.dispatch('iosockets/close_sockets');
-      this.$router.push('/login');
     },
     clickBugReport() {
       this.BugReportisOpen = true;
