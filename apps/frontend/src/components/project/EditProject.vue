@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <div class="p-8">
+    <div class="p-8 h-full">
       <!-- TEXT -->
       <FormulateForm
         v-if="currentState.state == 'new-project'"
@@ -25,8 +25,8 @@
         v-model="projectinfo"
         :schema="editProjectSchema"
       />
-      <UploadIFC v-if="currentState.state == 'project-settings'" />
     </div>
+    <PreviewIfc v-if="currentState.state == 'project-settings'" />
     <div class="p-8" v-if="currentState.state == 'project-settings'">
       <button
         class="border border-red-500 rounded px-3 py-2 leading-none focus:border-red-500 bg-red-400 outline-none border-box mb-1"
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import UploadIFC from './UploadIFC';
+import PreviewIfc from './PreviewIfc.vue';
 import projectHeader from '@/services/project-header';
 export default {
   name: 'edit-project',
@@ -108,7 +108,7 @@ export default {
     },
   },
   components: {
-    UploadIFC,
+    PreviewIfc,
   },
 
   methods: {
@@ -135,7 +135,7 @@ export default {
               error.toString(),
             group: 'error',
           });
-        }
+        },
       );
     },
     submitEditProject() {
@@ -163,13 +163,13 @@ export default {
                 error.toString(),
               group: 'error',
             });
-          }
+          },
         );
     },
     deleteSubProject() {
       if (
         confirm(
-          'Do you really want to delete? Chatlog & Project will be deleted.'
+          'Do you really want to delete? Chatlog & Project will be deleted.',
         )
       ) {
         this.$http
@@ -196,7 +196,7 @@ export default {
                   error.toString(),
                 group: 'error',
               });
-            }
+            },
           );
       }
     },
@@ -212,7 +212,7 @@ export default {
             (error.response && error.response.data) ||
             error.message ||
             error.toString();
-        }
+        },
       );
     }
     this.$http.get('/project/get_projects').then(
@@ -228,7 +228,7 @@ export default {
           (error.response && error.response.data) ||
           error.message ||
           error.toString();
-      }
+      },
     );
   },
 };

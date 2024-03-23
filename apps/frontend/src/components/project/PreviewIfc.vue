@@ -1,23 +1,25 @@
 <template>
-  <div ref="sceneContainer" class="scene-container"></div>
+  <div ref="container" class="full-screen"></div>
 </template>
 
 <script>
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { SimpleGrid } from 'openbim-components';
+import * as OBC from 'openbim-components';
+import * as WEBIFC from 'web-ifc';
+import projectHeader from '../../services/project-header';
 
 export default {
   name: 'PreviewIfc',
   data() {
     return {
-      container: null,
-      scene: null,
-      camera: null,
-      renderer: null,
-      controls: null,
-      grid: null,
-      cube: null,
+      components: null,
+      fragmentIfcLoader: null,
+      fragments: null,
+      settings: {
+        loadFragments: this.loadIfcAsFragments,
+        disposeFragments: this.disposeFragments,
+      },
+      mainToolbar: null,
     };
   },
   mounted() {
@@ -27,74 +29,113 @@ export default {
     this.dispose();
   },
   methods: {
-    init() {
-      // Set container
-      this.container = this.$refs.sceneContainer;
+    async init() {
+      const container = this.$refs.container;
 
-      // Create scene
-      this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color('#eeeeee');
-
-      // Create camera
-      this.camera = new THREE.PerspectiveCamera(
-        75,
-        this.container.clientWidth / this.container.clientHeight,
-        0.1,
-        1000,
+      this.components = new OBC.Components();
+      this.components.scene = new OBC.SimpleScene(this.components);
+      this.components.renderer = new OBC.PostproductionRenderer(
+        this.components,
+        container,
       );
-      this.camera.position.set(10, 10, 10);
-      this.camera.lookAt(0, 0, 0);
+      this.components.camera = new OBC.SimpleCamera(this.components);
+      this.components.raycaster = new OBC.SimpleRaycaster(this.components);
 
-      // Create renderer
-      this.renderer = new THREE.WebGLRenderer({ antialias: true });
-      this.renderer.setSize(
-        this.container.clientWidth,
-        this.container.clientHeight,
+      this.components.init();
+      this.components.renderer.postproduction.enabled = true;
+
+      const scene = this.components.scene.get();
+
+      this.components.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
+      this.components.scene.setup();
+
+      const grid = new OBC.SimpleGrid(
+        this.components,
+        new THREE.Color(0x666666),
       );
-      this.container.appendChild(this.renderer.domElement);
+      const customEffects =
+        this.components.renderer.postproduction.customEffects;
+      customEffects.excludedMeshes.push(grid.get());
 
-      // Create controls
-      this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.fragments = new OBC.FragmentManager(this.components);
+      this.fragmentIfcLoader = new OBC.FragmentIfcLoader(this.components);
 
-      // Add grid
-      this.grid = new SimpleGrid({
-        scene: this.scene,
-        controls: this.controls,
+      await this.fragmentIfcLoader.setup();
+
+      const excludedCats = [
+        WEBIFC.IFCTENDONANCHOR,
+        WEBIFC.IFCREINFORCINGBAR,
+        WEBIFC.IFCTENFORCINGELEMENT,
+      ];
+
+      for (const cat of excludedCats) {
+        this.fragmentIfcLoader.settings.excludedCategories.add(cat);
+      }
+
+      this.fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
+      this.fragmentIfcLoader.settings.webIfc.OPTIMIZE_PROFILES = true;
+
+      const mainToolbar = new OBC.Toolbar(this.components, {
+        name: 'Main Toolbar',
+        position: 'bottom',
       });
+      this.components.ui.addToolbar(mainToolbar);
+      const ifcButton = this.fragmentIfcLoader.uiElement.get('main');
 
-      // Add cube
-      const boxMaterial = new THREE.MeshStandardMaterial({ color: '#6528D7' });
-      const boxGeometry = new THREE.BoxGeometry(3, 3, 3);
-      this.cube = new THREE.Mesh(boxGeometry, boxMaterial);
-      this.cube.position.set(0, 1.5, 0);
-      this.scene.add(this.cube);
+      const uploadToServerButton = new OBC.Button(this.components);
+      uploadToServerButton.materialIcon = 'upload';
+      uploadToServerButton.tooltip = 'Upload fragments to server';
 
-      // Add lighting
-      const ambientLight = new THREE.AmbientLight(0x404040);
-      this.scene.add(ambientLight);
+      uploadToServerButton.onClick.add(this.uploadFragments);
 
-      const pointLight = new THREE.PointLight(0xffffff);
-      pointLight.position.set(10, 10, 10);
-      this.scene.add(pointLight);
-
-      // Start animation loop
-      this.animate();
+      mainToolbar.addChild(ifcButton);
+      mainToolbar.addChild(uploadToServerButton);
+      this.mainToolbar = mainToolbar;
     },
-    animate() {
-      requestAnimationFrame(this.animate);
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
-    },
+
     dispose() {
-      this.renderer.dispose();
-      this.scene.dispose();
+      this.components.dispose();
+    },
+
+    async uploadFragments() {
+      if (!this.fragments.groups.length) return;
+
+      const group = this.fragments.groups[0];
+      const data = this.fragments.export(group);
+      const blob = new Blob([data]);
+      const fragmentFile = new File([blob], 'small.frag');
+
+      const formData = new FormData();
+      formData.append('file', fragmentFile);
+
+      try {
+        const response = await this.$http.post(
+          `/project/uploadifc/${projectHeader()}`,
+          formData,
+        );
+        this.$notify({
+          title: 'Yay, all done!',
+          text: response.data.log,
+          group: 'info',
+          duration: 7000,
+        });
+      } catch (error) {
+        this.$notify({
+          title: 'Ooops...',
+          text:
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString(),
+          group: 'error',
+        });
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.scene-container {
+.full-screen {
   width: 100%;
   height: 100%;
 }
