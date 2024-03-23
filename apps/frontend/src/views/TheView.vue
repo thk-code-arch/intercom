@@ -36,8 +36,7 @@
         <right-sidebar />
       </div>
     </div>
-    <ViewPort v-if="selectedViewport === 'classic'" />
-    <IFCPort v-if="selectedViewport === 'ifc'" />
+    <IFCPort />
   </div>
 </template>
 
@@ -72,9 +71,6 @@ export default {
         '--header-height': this.viewHeight,
       };
     },
-    selectedViewport() {
-      return this.$store.state.viewport.selectedViewport;
-    },
   },
   methods: {
     openSidebar(left, right) {
@@ -103,7 +99,7 @@ export default {
             error.toString(),
           group: 'error',
         });
-      }
+      },
     );
   },
 };
