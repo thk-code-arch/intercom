@@ -104,25 +104,6 @@ export class ProjectController {
     };
   }
 
-  @Get('get_projectfile/:projectId')
-  @Header('Content-Type', 'model/gltf+json')
-  async getProjectfile(
-    @Param() pid: SelectProjectFile,
-    @CurrentUser('projects') project: number[],
-    @Res() response,
-  ) {
-    console.log(pid);
-    const file = await this.projectService.getProjectfile(project, pid);
-    const filepath = '/files/output/' + file.filename;
-    fs.exists(filepath, function (exists) {
-      if (exists) {
-        return fs.createReadStream(filepath).pipe(response);
-      } else {
-        return;
-      }
-    });
-  }
-
   @Get('get_projectfileifc/:projectId')
   @Header('Content-Type', 'application/octet-stream')
   async getProjectfileIfc(
@@ -131,7 +112,7 @@ export class ProjectController {
     @Res() response,
   ) {
     const file = await this.projectService.getProjectfile(project, pid);
-    const filepath = '/files/input/' + file.filename.replace('.glb', '.ifc');
+    const filepath = '/files/input/' + file.filename;
     fs.exists(filepath, function (exists) {
       if (exists) {
         return fs.createReadStream(filepath).pipe(response);
