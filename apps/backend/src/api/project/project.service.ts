@@ -192,7 +192,7 @@ export class ProjectService {
     projectid: number,
   ): Promise<Projectfile | undefined> {
     const file = new Projectfile();
-    file.filename = filename.replace('.ifc', '.glb');
+    file.filename = filename;
     file.path = path;
     file.project = <any>projectid;
     file.user = <any>userid;

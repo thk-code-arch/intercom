@@ -98,19 +98,9 @@ export class ProjectController {
       projectid,
     );
 
-    const convert = await this.utils
-      .convertIfc(file.filename.replace('.ifc', ''))
-      .then((log) => {
-        this.logger.log(log);
-        return log;
-      })
-      .catch((error) => {
-        this.logger.error(error);
-        return error;
-      });
     return {
       name: upload.filename,
-      log: `ifc convert ${convert}`,
+      log: 'IFC fragment file uploaded successfully',
     };
   }
 
