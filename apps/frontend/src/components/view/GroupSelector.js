@@ -9,7 +9,7 @@ export class GroupSelector extends OBC.Component {
     this.components.tools.add(GroupSelector.uuid, this);
 
     this.highlightMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
+      color: 0x00b1ff,
       transparent: true,
       opacity: 0.5,
     });

@@ -9,7 +9,6 @@
 import {
   DirectionalLight,
   AmbientLight,
-  Vector2,
   Vector3,
   Mesh,
   MeshBasicMaterial,
@@ -28,26 +27,11 @@ export default {
   name: 'ifc-port',
   data() {
     return {
-      //camera: null,
-      //controls: null,
-      //renderer: null,
       camPos: null,
-      //avatar: null,
-      //highlightMaterial: null,
-      //isDragging: false,
-      //dragObject: null,
 
       //// create Vector to calculate Camera Direction
 
-      //plane: new Plane(),
-      //pNormal: new Vector3(0, 1, 0),
-      //raycaster: new Raycaster(),
-      //shift: new Vector3(),
       vector: new Vector3(),
-      //found: null,
-      //planeIntersect: new Vector3(),
-      //pIntersect: new Vector3(),
-      // obc components
 
       container: null,
       components: new OBC.Components(),
@@ -124,19 +108,11 @@ export default {
       this.scene.background = new Color('#eeeeee');
 
       console.log('poso', this.components.camera.controls);
-      //read own position
       this.components.camera.controls.addEventListener('controlend', () =>
         this.updateCamera(),
       );
       this.loadModel();
-      // TODO highlightMaterial color
 
-      //   this.highlightMaterial = new MeshPhongMaterial({
-      //     color: 0x00b1ff,
-      //     depthTest: false,
-      //     transparent: true,
-      //     opacity: 0.3,
-      //   });
       this.groupSelector = new GroupSelector(this.components);
     },
 
@@ -260,9 +236,6 @@ export default {
     moveObject(oModelName, posi) {
       const selObject = this.scene.getObjectByName(oModelName);
       if (selObject) {
-        //selAvatar.rotation.x = player.dir.x;
-        //selAvatar.rotation.y = player.dir.y;
-        //selAvatar.rotation.z = player.dir.z;
         selObject.position.x = posi.x;
         selObject.position.y = posi.y;
         selObject.position.z = posi.z;
@@ -347,57 +320,6 @@ export default {
 
       this.$store.dispatch('viewport/imgStore', screenshot);
     },
-
-    //  pointerMove(event) {
-    //    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    //    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    //    this.raycaster.setFromCamera(this.mouse, this.camera);
-    //    if (this.isDragging) {
-    //      this.raycaster.ray.intersectPlane(this.plane, this.planeIntersect);
-    //      this.dragObject.position.addVectors(this.planeIntersect, this.shift);
-    //      this.updateCamera();
-    //    }
-    //  },
-    //    pointerDown() {
-    //      const intersects = this.raycaster.intersectObjects(
-    //        this.scene.children,
-    //        false,
-    //      );
-    //      console.log('pointerDown', intersects);
-    //      if (intersects.length) {
-    //        this.found = intersects[0];
-    //        //dont move parent Project
-    //        if (this.found.object.name !== 'projectId') {
-    //          this.controls.enabled = false;
-    //          this.pIntersect.copy(this.found.point);
-    //          this.plane.setFromNormalAndCoplanarPoint(
-    //            this.pNormal,
-    //            this.pIntersect,
-    //          );
-    //          this.shift.subVectors(this.found.object.position, this.found.point);
-    //          this.isDragging = true;
-    //          this.dragObject = this.found.object;
-    //          this.found.object.userData.color = this.found.object.material;
-    //          this.found.object.material = this.highlightMaterial;
-    //        }
-    //      }
-    //    },
-    //    pointerUp() {
-    //      if (this.isDragging) {
-    //        this.isDragging = false;
-    //        if (this.dragObject.name.match(/subprojectId/)) {
-    //          this.$store.dispatch('viewport/setSuprojectPosition', {
-    //            id: parseInt(this.dragObject.name.replace('subprojectId:', '')),
-    //            position: this.dragObject.position,
-    //          });
-    //        }
-    //        this.controls.enabled = true;
-    //        this.found.object.material = this.found.object.userData.color;
-    //        this.dragObject = null;
-    //        this.updateObjectPostition(this.selectedSubprojects);
-    //        this.updateCamera();
-    //      }
-    //    },
     pullSpPositions() {
       this.$http
         .get(
@@ -455,22 +377,9 @@ export default {
     if (this.hasSubproject) {
       this.pullSpPositions();
     }
-    //    this.controls.addEventListener('change', this.updateCamera);
-    //    this.container.addEventListener('pointerdown', this.pointerDown);
-    //this.container.addEventListener('pointermove', this.pointerMove);
-    //    this.container.addEventListener('pointerup', this.pointerUp);
-    // call this only in static scenes (i.e., if there is no animation loop)
-  },
-  created() {
-    // window.addEventListener('resize', this.resizeWindow);
   },
   destroyed() {
     this.components.dispose();
-    // window.removeEventListener('resize', this.resizeWindow);
-    //    this.controls.removeEventListener('change', this.updateCamera);
-    //    this.container.removeEventListener('pointerdown', this.pointerDown);
-    //this.container.removeEventListener('pointermove', this.pointerMove);
-    //    this.container.removeEventListener('pointerup', this.pointerUp);
   },
 };
 </script>
