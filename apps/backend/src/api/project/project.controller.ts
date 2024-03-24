@@ -30,6 +30,12 @@ import { diskStorage } from 'multer';
 import { editFileName, IFCFileFilter } from '../../utils/file-upload';
 import * as fs from 'fs';
 
+import { createReadStream, Stats } from 'fs';
+
+function isStats(value: true | Stats): value is Stats {
+  return typeof value !== 'boolean';
+}
+
 @Auth(Roles.USER)
 @ApiTags('project')
 @Controller('project')
@@ -106,20 +112,31 @@ export class ProjectController {
 
   @Get('get_projectfileifc/:projectId')
   @Header('Content-Type', 'application/octet-stream')
+  @Header('Content-Disposition', 'attachment; filename="file.ifc"')
   async getProjectfileIfc(
     @Param() pid: SelectProjectFile,
     @CurrentUser('projects') project: number[],
     @Res() response,
   ) {
-    const file = await this.projectService.getProjectfile(project, pid);
-    const filepath = '/files/input/' + file.filename;
-    fs.exists(filepath, function (exists) {
-      if (exists) {
-        return fs.createReadStream(filepath).pipe(response);
+    try {
+      const file = await this.projectService.getProjectfile(project, pid);
+      const filePath = `/files/input/${file.filename}`;
+
+      const fileExists = await fs.promises.stat(filePath).catch(() => false);
+      if (fileExists) {
+        if (isStats(fileExists)) {
+          const fileStream = createReadStream(filePath);
+          response.setHeader('Content-Length', fileExists.size);
+          fileStream.pipe(response);
+        } else {
+          response.status(404).send('File not found');
+        }
       } else {
-        return;
+        response.status(404).send('File not found');
       }
-    });
+    } catch (err) {
+      response.status(500).send('Internal Server Error');
+    }
   }
 
   @Get('get_projectinfo/:theprojectId')

@@ -43,7 +43,6 @@
 <script>
 import LeftSidebar from '@/components/view/LeftSidebar';
 import RightSidebar from '@/components/view/RightSidebar';
-import ViewPort from '@/components/view/ViewPort';
 import IFCPort from '@/components/view/IFCPort';
 import projectHeader from '@/services/project-header';
 
@@ -51,7 +50,6 @@ export default {
   name: 'TheView',
   components: {
     IFCPort,
-    ViewPort,
     LeftSidebar,
     RightSidebar,
   },
