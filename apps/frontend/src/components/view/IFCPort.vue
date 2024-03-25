@@ -37,6 +37,7 @@ export default {
       components: new OBC.Components(),
       scene: null,
       groupSelector: null,
+      mainToolbar: null,
     };
   },
   computed: {
@@ -84,10 +85,9 @@ export default {
         this.container,
       );
 
-      console.log(this.components.renderer);
       // TODO: Set renderer size based on container size .setSize(container.clientWidth, container.clientHeight);
 
-      this.components.camera = new OBC.OrthoPerspectiveCamera(this.components);
+      this.components.camera = new OBC.SimpleCamera(this.components);
       this.components.raycaster = new OBC.SimpleRaycaster(this.components);
       this.components.init();
 
@@ -96,8 +96,10 @@ export default {
       this.components.renderer.postproduction.enabled = true;
 
       this.scene = this.components.scene.get();
+      this.components.grid = new OBC.SimpleGrid(this.components);
+      this.components.grid.get().visible = false;
 
-      this.components.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
+      this.components.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
 
       const directionalLight = new DirectionalLight();
       directionalLight.position.set(5, 10, 3);
@@ -109,13 +111,53 @@ export default {
       this.scene.add(ambientLight);
       this.scene.background = new Color('#eeeeee');
 
-      console.log('poso', this.components.camera.controls);
       this.components.camera.controls.addEventListener('controlend', () =>
         this.updateCamera(),
       );
       this.loadModel();
 
       this.groupSelector = new GroupSelector(this.components);
+
+      /// toolbar
+
+      this.initToolbar();
+    },
+    initToolbar() {
+      /// toolbar
+      const mainToolbar = new OBC.Toolbar(this.components, {
+        name: 'Main Toolbar',
+        position: 'bottom',
+      });
+
+      this.components.ui.addToolbar(mainToolbar);
+
+      const moveObjects = this.createButton('pan_tool', 'Move Objects', () => {
+        this.groupSelector.enableTool();
+      });
+
+      const resetLook = this.createButton('visibility', 'Reset Look', () => {
+        this.components.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
+      });
+
+      const enableGrid = this.createButton('grid_on', 'Enable Grid', () => {
+        this.components.grid.get().visible =
+          !this.components.grid.get().visible;
+      });
+
+      [resetLook, enableGrid, moveObjects].forEach((button) =>
+        mainToolbar.addChild(button),
+      );
+
+      // Helper method to create a button
+    },
+    createButton(icon, tooltip, onClick) {
+      const button = new OBC.Button(this.components);
+      button.materialIcon = icon;
+      button.tooltip = tooltip;
+      button.get().classList.remove('hover:bg-ifcjs-200');
+      button.get().classList.add('hover:bg-codearch-700');
+      button.onClick.add(onClick);
+      return button;
     },
 
     insertAvatar() {
@@ -155,7 +197,6 @@ export default {
     loadAvatar(avatarId, name) {
       // TODO: load avatar file from server. custom avatars gltb,ifc or fragments
       if (!this.scene.getObjectByName(name)) {
-        console.log('loadAvatar', avatarId, name);
         const geometry = new SphereGeometry(1, 32, 32); // radius, widthSegments, heightSegments
         const material = new MeshBasicMaterial({ color: 0xffffff }); // white color
         const sphere = new Mesh(geometry, material);
@@ -180,7 +221,6 @@ export default {
         );
         try {
           const fragments = this.components.tools.get(OBC.FragmentManager);
-          console.log(fragments);
 
           const response = await fetch(
             `${this.$app_url}/api/project/get_projectfileifc/${subproject.id}`,
@@ -191,7 +231,6 @@ export default {
               },
             },
           );
-          console.log(response);
 
           const data = await response.arrayBuffer();
           const buffer = new Uint8Array(data);
@@ -313,10 +352,13 @@ export default {
     }, // Debounce for 100ms
 
     takeScreenshot() {
-      let renderer = this.components.renderer._renderer.render(
-        this.components.scene.get(),
-        this.components.camera.get(),
-      );
+      let scene = this.components.scene.get();
+      let camera = this.components.camera.get();
+
+      let renderer = this.components.renderer._renderer;
+
+      renderer.render(scene, camera);
+      console.log(renderer);
 
       let screenshot = renderer.domElement.toDataURL();
 
