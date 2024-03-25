@@ -62,6 +62,28 @@ export class GroupSelector extends OBC.Component {
     }
   };
 
+  dispose() {
+    this.components.renderer
+      .get()
+      .domElement.removeEventListener('pointerdown', this.onPointerDown);
+    this.components.renderer
+      .get()
+      .domElement.removeEventListener('pointermove', this.onPointerMove);
+    this.components.renderer
+      .get()
+      .domElement.removeEventListener('pointerup', this.onPointerUp);
+    this.highlightMaterial = null;
+    this.highlightMaterial = null;
+    this.dragObject = null;
+    this.isDragging = null;
+    this.plane = null;
+    this.pNormal = null;
+    this.shift = null;
+    this.originalMaterials = null;
+    this.pIntersect = null;
+    this.isEnabled = null;
+  }
+
   onPointerMove = (event) => {
     if (!this.isEnabled || !this.isDragging || !this.dragObject) return; // Check if the tool is enabled and dragging is in progress
 
