@@ -36,7 +36,7 @@
         <router-link
           to="/view"
           class="w-full py-1 border-b-2 border-transparent outline-none lg:p-2 hover:border-codearch-400"
-          v-if="isProjectSelected"
+          v-if="currentProject && currentProject.id"
           active-class="border-codearch-400"
         >
           View</router-link
@@ -77,11 +77,8 @@ export default {
     FirstHeader,
   },
   computed: {
-    isProjectSelected() {
-      if (this.currentProject) {
-        return this.currentProject.id;
-      }
-      return false;
+    currentProject() {
+      return this.$store.state.curproject.theproject;
     },
   },
 };

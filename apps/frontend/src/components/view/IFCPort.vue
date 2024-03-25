@@ -96,7 +96,9 @@ export default {
       this.components.renderer.postproduction.enabled = true;
 
       this.scene = this.components.scene.get();
+
       this.components.grid = new OBC.SimpleGrid(this.components);
+
       this.components.grid.get().visible = false;
 
       this.components.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
@@ -121,6 +123,13 @@ export default {
       /// toolbar
 
       this.initToolbar();
+    },
+    notifyError(error) {
+      this.$notify({
+        title: 'Ooops...',
+        text: error.message || error.toString(),
+        group: 'error',
+      });
     },
     initToolbar() {
       /// toolbar
@@ -263,8 +272,7 @@ export default {
           this.scene.add(group);
           this.updateCamera();
         } catch (err) {
-          console.log('Error loading IFC.');
-          console.log(err);
+          this.notifyError('Error loading IFC. Please reupload your IFC file.');
         }
       }
     },
@@ -304,6 +312,9 @@ export default {
           },
         },
       );
+      if (file.status !== 200) {
+        this.notifyError('Error loading IFC. Please reupload your IFC file.');
+      }
       const data = await file.arrayBuffer();
       const buffer = new Uint8Array(data);
       const group = await fragments.load(buffer);

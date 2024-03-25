@@ -197,10 +197,14 @@ export default {
 
     logOut() {
       this.$store.dispatch('curproject/unselect');
-      this.$store.dispatch('auth/logout');
       this.$store.dispatch('viewport/clear');
       this.$store.dispatch('chatroom/clear');
       this.$store.dispatch('iosockets/close_sockets');
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/').then(() => {
+        // After the navigation is confirmed, reload the page
+        window.location.reload();
+      });
     },
     clickBugReport() {
       this.BugReportisOpen = true;

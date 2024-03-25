@@ -13,6 +13,7 @@
           viewBox="0 0 24 24"
           stroke="currentColor"
           stroke-width="2"
+          class="w-8 h-8"
         >
           <path
             stroke-linecap="round"
@@ -25,7 +26,7 @@
         v-on:click="currentTab = 'Issues'"
         class="flex justify-center p-2 bg-white cursor-pointer w-full"
       >
-        <svg viewBox="0 0 20 20" fill="currentColor">
+        <svg class="w-8 h-8" viewBox="0 0 20 20" fill="currentColor">
           <path
             fill-rule="evenodd"
             d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
@@ -37,7 +38,7 @@
         v-on:click="currentTab = 'Materials'"
         class="flex justify-center p-2 bg-white cursor-pointer w-full"
       >
-        <svg viewBox="0 0 20 20" fill="currentColor">
+        <svg class="w-8 h-8" viewBox="0 0 20 20" fill="currentColor">
           <path
             fill-rule="evenodd"
             d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z"
@@ -49,7 +50,7 @@
         v-on:click="currentTab = 'SavedViews'"
         class="flex justify-center p-2 bg-white cursor-pointer w-full"
       >
-        <svg viewBox="0 0 20 20" fill="currentColor">
+        <svg class="w-8 h-8" viewBox="0 0 20 20" fill="currentColor">
           <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
           <path
             fill-rule="evenodd"
@@ -64,6 +65,7 @@
       >
         <svg
           data-darkreader-inline-fill=""
+          class="w-8 h-8"
           data-darkreader-inline-stroke=""
           fill="none"
           stroke="currentColor"

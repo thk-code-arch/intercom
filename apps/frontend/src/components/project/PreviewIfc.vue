@@ -20,6 +20,7 @@ export default {
         disposeFragments: this.disposeFragments,
       },
       mainToolbar: null,
+      scene: null,
     };
   },
   mounted() {
@@ -44,18 +45,12 @@ export default {
       this.components.init();
       this.components.renderer.postproduction.enabled = true;
 
-      const scene = this.components.scene.get();
+      this.scene = this.components.scene.get();
 
       this.components.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
       this.components.scene.setup();
 
-      const grid = new OBC.SimpleGrid(
-        this.components,
-        new THREE.Color(0x666666),
-      );
-      const customEffects =
-        this.components.renderer.postproduction.customEffects;
-      customEffects.excludedMeshes.push(grid.get());
+      this.scene.background = new THREE.Color('#eeeeee');
 
       this.fragments = new OBC.FragmentManager(this.components);
       this.fragmentIfcLoader = new OBC.FragmentIfcLoader(this.components);
