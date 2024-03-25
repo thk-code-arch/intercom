@@ -44,3 +44,9 @@
 .has-tooltip:hover .the-tooltip {
   @apply z-50 visible;
 }
+
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
