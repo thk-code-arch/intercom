@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import * as OBC from 'openbim-components';
 
+import store from '@/store/index.js';
+
 export class GroupSelector extends OBC.Component {
   static uuid = 'd9ad12be-5cdb-4065-9761-f99b1e63a983';
 
@@ -77,6 +79,13 @@ export class GroupSelector extends OBC.Component {
           child.material = new THREE.MeshStandardMaterial();
         }
       });
+      if (this.dragObject.name.match(/subprojectId/)) {
+        store.dispatch('viewport/setSuprojectPosition', {
+          id: parseInt(this.dragObject.name.replace('subprojectId:', '')),
+          position: this.dragObject.position,
+        });
+      }
+
       this.dragObject = null;
       this.isDragging = false;
       this.components.camera.controls.enabled = true; // Re-enable controls when dragging ends

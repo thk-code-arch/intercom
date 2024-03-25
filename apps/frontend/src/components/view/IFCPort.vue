@@ -83,6 +83,8 @@ export default {
         this.components,
         this.container,
       );
+
+      console.log(this.components.renderer);
       // TODO: Set renderer size based on container size .setSize(container.clientWidth, container.clientHeight);
 
       this.components.camera = new OBC.OrthoPerspectiveCamera(this.components);
