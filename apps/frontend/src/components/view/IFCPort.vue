@@ -308,7 +308,6 @@ export default {
       const buffer = new Uint8Array(data);
       const group = await fragments.load(buffer);
       group.name = 'projectId';
-      console.log(this.components.renderer);
     },
 
     getCameraPosition() {

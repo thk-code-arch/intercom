@@ -121,7 +121,7 @@ export default {
           },
         );
       }
-      if (project.sub.length !== 0) {
+      if (project.sub && project.sub.length !== 0) {
         this.mainprojects = this.projects;
         this.showBackButton = true;
         this.projects = this.subprojects.filter(
