@@ -12,7 +12,6 @@ export const viewport = {
     imgDataurl: '',
     selectedSubprojects: [],
     subprojectsPositions: [],
-    selectedViewport: 'ifc',
   },
   actions: {
     // Read materials List from GLTF (not as usefull...)
@@ -102,9 +101,6 @@ export const viewport = {
       }
       commit('clear');
     },
-    setViewport({ commit }, view) {
-      commit('selectedViewport', view);
-    },
     setSuprojectPosition({ commit, state }, data) {
       const newPosition = state.subprojectsPositions.map((x) => {
         if (x.id === data.id) {
@@ -116,11 +112,11 @@ export const viewport = {
     },
     pullSubprojectPositions({ commit, rootState }, pulledSpPositions) {
       const validSubprojects = rootState.curproject.theproject.subprojects.map(
-        (x) => x.id
+        (x) => x.id,
       );
 
       const validPulledSpPostitions = pulledSpPositions.filter((x) =>
-        validSubprojects.includes(x.id)
+        validSubprojects.includes(x.id),
       );
 
       const arrWithPositions = validPulledSpPostitions.map((x) => {
@@ -180,9 +176,6 @@ export const viewport = {
     },
     setSubprojectsPositions(state, selectedSubprojects) {
       state.subprojectsPositions = selectedSubprojects;
-    },
-    selectedViewport(state, view) {
-      state.selectedViewport = view;
     },
   },
   getters: {

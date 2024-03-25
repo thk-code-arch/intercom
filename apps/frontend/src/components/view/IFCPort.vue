@@ -7,54 +7,37 @@
 </template>
 <script>
 import {
-  PerspectiveCamera,
-  Scene,
-  Color,
   DirectionalLight,
   AmbientLight,
-  WebGLRenderer,
-  Plane,
-  Vector2,
   Vector3,
-  MeshPhongMaterial,
-  Raycaster,
-  Box3,
+  Mesh,
+  MeshBasicMaterial,
+  SphereGeometry,
+  Color,
 } from 'three';
 
+import * as OBC from 'openbim-components';
+import { GroupSelector } from './GroupSelector.js';
+
 import SpriteText from 'three-spritetext';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { IFCLoader } from 'three/examples/jsm/loaders/IFCLoader.js';
 import authHeader from '@/services/auth-header';
 import projectHeader from '@/services/project-header';
-import { debounce } from 'lodash';
 
 export default {
   name: 'ifc-port',
   data() {
     return {
-      container: null,
-      scene: new Scene(),
-      camera: null,
-      controls: null,
-      renderer: null,
-      camPos: '',
-      avatar: null,
-      highlightMaterial: null,
-      isDragging: false,
-      dragObject: null,
+      camPos: null,
 
-      // create Vector to calculate Camera Direction
+      //// create Vector to calculate Camera Direction
 
-      plane: new Plane(),
-      pNormal: new Vector3(0, 1, 0),
-      raycaster: new Raycaster(),
-      shift: new Vector3(),
       vector: new Vector3(),
-      found: null,
-      mouse: new Vector2(),
-      planeIntersect: new Vector3(),
-      pIntersect: new Vector3(),
+
+      container: null,
+      components: new OBC.Components(),
+      scene: null,
+      groupSelector: null,
+      mainToolbar: null,
     };
   },
   computed: {
@@ -96,76 +79,94 @@ export default {
     init() {
       // set container
       this.container = this.$refs.sceneContainer;
+      this.components.scene = new OBC.SimpleScene(this.components);
+      this.components.renderer = new OBC.PostproductionRenderer(
+        this.components,
+        this.container,
+      );
 
-      // add camera
-      const fov = 45; // Field of view
-      const aspect = this.container.clientWidth / this.container.clientHeight;
-      const near = 0.1; // the near clipping plane
-      const far = 1000; // the far clipping plane
-      const camera = new PerspectiveCamera(fov, aspect, near, far);
-      this.camera = camera;
+      // TODO: Set renderer size based on container size .setSize(container.clientWidth, container.clientHeight);
 
-      //Scene set color
+      this.components.camera = new OBC.SimpleCamera(this.components);
+      this.components.raycaster = new OBC.SimpleRaycaster(this.components);
+      this.components.init();
+
+      this.components.scene.setup();
+
+      this.components.renderer.postproduction.enabled = true;
+
+      this.scene = this.components.scene.get();
+
+      this.components.grid = new OBC.SimpleGrid(this.components);
+
+      this.components.grid.get().visible = false;
+
+      this.components.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
+
+      const directionalLight = new DirectionalLight();
+      directionalLight.position.set(5, 10, 3);
+      directionalLight.intensity = 0.5;
+      this.scene.add(directionalLight);
+
+      const ambientLight = new AmbientLight();
+      ambientLight.intensity = 0.5;
+      this.scene.add(ambientLight);
       this.scene.background = new Color('#eeeeee');
 
-      // add lights
-      const directionalLight1 = new DirectionalLight(0xffeeff, 0.8);
-      directionalLight1.position.set(1, 1, 1);
-      this.scene.add(directionalLight1);
-      const directionalLight2 = new DirectionalLight(0xffffff, 0.8);
-      directionalLight2.position.set(-1, 0.5, -1);
-      this.scene.add(directionalLight2);
-      const ambientLight = new AmbientLight(0xffffee, 0.25);
-      this.scene.add(ambientLight);
+      this.components.camera.controls.addEventListener('controlend', () =>
+        this.updateCamera(),
+      );
       this.loadModel();
 
-      //Controls
-      this.controls = new OrbitControls(this.camera, this.container);
-      this.controls.keys = {
-        LEFT: 65, //left arrow
-        UP: 87, // up arrow
-        RIGHT: 68, // right arrow
-        BOTTOM: 83, // down arrow
-      };
-      // create renderer
-      this.renderer = new WebGLRenderer({ antialias: true });
-      this.renderer.setPixelRatio(window.devicePixelRatio);
-      this.renderer.outputEncoding = true;
-      this.renderer.gammaFactor = 2.2;
-      this.renderer.shadowMap.enabled = true;
-      // this.renderer.shadowMap.type = PCFSoftShadowMap; // default PCFShadowMap
-      this.container.appendChild(this.renderer.domElement);
+      this.groupSelector = new GroupSelector(this.components);
 
-      // set aspect ratio to match the new browser window aspect ratio
-      this.camera.aspect =
-        this.container.clientWidth / this.container.clientHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(
-        this.container.clientWidth,
-        this.container.clientHeight,
-      );
-      // selectingModelsColor
-      this.highlightMaterial = new MeshPhongMaterial({
-        color: 0x00b1ff,
-        depthTest: false,
-        transparent: true,
-        opacity: 0.3,
+      /// toolbar
+
+      this.initToolbar();
+    },
+    notifyError(error) {
+      this.$notify({
+        title: 'Ooops...',
+        text: error.message || error.toString(),
+        group: 'error',
+      });
+    },
+    initToolbar() {
+      /// toolbar
+      const mainToolbar = new OBC.Toolbar(this.components, {
+        name: 'Main Toolbar',
+        position: 'bottom',
       });
 
-      // create Vector to calculate Camera Direction
-      this.render();
-    },
+      this.components.ui.addToolbar(mainToolbar);
 
-    resizeWindow() {
-      this.container = this.$refs.sceneContainer;
-      this.renderer.setSize(
-        this.container.clientWidth,
-        this.container.clientHeight,
+      const moveObjects = this.createButton('pan_tool', 'Move Objects', () => {
+        this.groupSelector.enableTool();
+      });
+
+      const resetLook = this.createButton('visibility', 'Reset Look', () => {
+        this.components.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
+      });
+
+      const enableGrid = this.createButton('grid_on', 'Enable Grid', () => {
+        this.components.grid.get().visible =
+          !this.components.grid.get().visible;
+      });
+
+      [resetLook, enableGrid, moveObjects].forEach((button) =>
+        mainToolbar.addChild(button),
       );
-      this.camera.aspect =
-        this.container.clientWidth / this.container.clientHeight;
-      this.camera.updateProjectionMatrix();
-      this.render();
+
+      // Helper method to create a button
+    },
+    createButton(icon, tooltip, onClick) {
+      const button = new OBC.Button(this.components);
+      button.materialIcon = icon;
+      button.tooltip = tooltip;
+      button.get().classList.remove('hover:bg-ifcjs-200');
+      button.get().classList.add('hover:bg-codearch-700');
+      button.onClick.add(onClick);
+      return button;
     },
 
     insertAvatar() {
@@ -201,68 +202,77 @@ export default {
         this.unloadSubproject(sb);
       });
     },
+
     loadAvatar(avatarId, name) {
+      // TODO: load avatar file from server. custom avatars gltb,ifc or fragments
       if (!this.scene.getObjectByName(name)) {
-        const gltfLoader = new GLTFLoader();
-        gltfLoader.setRequestHeader({ Authorization: authHeader() });
-        gltfLoader.load(
-          `${this.$app_url}/api/avatar/get_avatarfile/${avatarId}`,
-          (gltf) => {
-            gltf.scene.scale.set(0.4, 0.4, 0.4);
-            gltf.scene.name = name;
-            // add Text
-            var myText = new SpriteText(name);
-            myText.textHeight = 2;
-            myText.strokeWidth = 1;
-            myText.strokeColor = 'black';
-            myText.position.y = gltf.scene.position.y - 3;
-            gltf.scene.add(myText);
-            this.scene.add(gltf.scene);
-          },
-        );
+        const geometry = new SphereGeometry(1, 32, 32); // radius, widthSegments, heightSegments
+        const material = new MeshBasicMaterial({ color: 0xffffff }); // white color
+        const sphere = new Mesh(geometry, material);
+        sphere.scale.set(0.4, 0.4, 0.4); // scale the sphere
+        sphere.name = name; // set the name of the sphere
+
+        // add Text
+        const myText = new SpriteText(name);
+        myText.textHeight = 2;
+        myText.strokeWidth = 1;
+        myText.strokeColor = 'black';
+        myText.position.y = sphere.position.y - 3; // position the text below the sphere
+        sphere.add(myText); // add the text to the sphere
+
+        this.scene.add(sphere);
       }
     },
     async loadSubproject(subproject) {
       if (!this.scene.getObjectByName(`subprojectId:${subproject.id}`)) {
-        const ifcLoader = new IFCLoader();
-        ifcLoader.setRequestHeader({ Authorization: authHeader() });
+        const parentProject = this.scene.children.find((x) =>
+          x.name.match(/projectId/),
+        );
         try {
-          ifcLoader.load(
-            `${this.$app_url}/api/project/get_projectfileifc/${subproject.id}`,
-            (ifc, progress, error) => {
-              console.log(error);
-              console.log(ifc);
-              const parentProject = this.scene.children.find((x) =>
-                x.name.match(/projectId/),
-              );
-              console.log('parriet', parentProject);
-              ifc.name = `subprojectId:${subproject.id}`;
-              if (
-                subproject.position.x === 0 &&
-                subproject.position.y === 0 &&
-                subproject.position.z === 0
-              ) {
-                ifc.position.x = parentProject.position.x;
-                ifc.position.y = parentProject.position.y;
-                ifc.position.z = parentProject.position.z;
-                this.$store.dispatch('viewport/setSuprojectPosition', {
-                  id: subproject.id,
-                  position: ifc.position,
-                });
-              } else {
-                ifc.position.x = subproject.position.x;
-                ifc.position.y = subproject.position.y;
-                ifc.position.z = subproject.position.z;
-              }
-              console.log('added Postitioon', ifc.position);
+          const fragments = this.components.tools.get(OBC.FragmentManager);
 
-              this.scene.add(ifc.mesh);
-              this.updateCamera();
+          const response = await fetch(
+            `${this.$app_url}/api/project/get_projectfileifc/${subproject.id}`,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: authHeader(),
+              },
             },
           );
+
+          const data = await response.arrayBuffer();
+          const buffer = new Uint8Array(data);
+          const group = await fragments.load(buffer);
+
+          group.name = `subprojectId:${subproject.id}`;
+          console.log('loadSubproject', group);
+          console.log('loadSubprojectf', parentProject);
+
+          if (
+            subproject.position.x === 0 &&
+            subproject.position.y === 0 &&
+            subproject.position.z === 0
+          ) {
+            group.position.x = parentProject?.position.x || 0;
+            group.position.y = parentProject?.position.y || 0;
+            group.position.z = parentProject?.position.z || 0;
+            this.$store.dispatch('viewport/setSuprojectPosition', {
+              id: subproject.id,
+              position: group.position,
+            });
+          } else {
+            group.position.x = subproject.position.x;
+            group.position.y = subproject.position.y;
+            group.position.z = subproject.position.z;
+          }
+
+          console.log('added Position', group.position);
+
+          this.scene.add(group);
+          this.updateCamera();
         } catch (err) {
-          console.log('Error loading IFC.');
-          console.log(err);
+          this.notifyError('Error loading IFC. Please reupload your IFC file.');
         }
       }
     },
@@ -275,9 +285,6 @@ export default {
     moveObject(oModelName, posi) {
       const selObject = this.scene.getObjectByName(oModelName);
       if (selObject) {
-        //selAvatar.rotation.x = player.dir.x;
-        //selAvatar.rotation.y = player.dir.y;
-        //selAvatar.rotation.z = player.dir.z;
         selObject.position.x = posi.x;
         selObject.position.y = posi.y;
         selObject.position.z = posi.z;
@@ -292,55 +299,38 @@ export default {
         selObject.rotation.y = posi.rotation.y;
       }
     },
-    loadModel() {
-      //Setup IFC Loader
-      const ifcLoader = new IFCLoader();
-
-      ifcLoader.setRequestHeader({ Authorization: authHeader() });
-      try {
-        ifcLoader.load(
-          `${this.$app_url}/api/project/get_projectfileifc/${projectHeader()}`,
-          (ifc) => {
-            const box = new Box3().setFromObject(ifc.mesh);
-            const size = box.getSize(new Vector3()).length();
-            const center = box.getCenter(new Vector3());
-
-            ifc.name = 'projectId';
-
-            ifc.position.x = ifc.position.x - center.x;
-            ifc.position.y = ifc.position.y - center.y;
-            ifc.position.z = ifc.position.z - center.z;
-
-            this.camera.near = size / 100;
-            this.camera.far = size * 100;
-
-            this.camera.updateProjectionMatrix();
-
-            this.camera.position.copy(center);
-            this.camera.position.x += size / 1.0;
-            this.camera.position.y += size / 2.0;
-            this.camera.position.z += size / -1.0;
-            this.camera.lookAt(center);
-
-            this.controls.maxDistance = size * 10;
-            this.controls.update();
-
-            this.scene.add(ifc.mesh);
-            this.render();
+    async loadModel() {
+      const fragments = new OBC.FragmentManager(this.components);
+      if (fragments.groups.length) return;
+      const file = await fetch(
+        `${this.$app_url}/api/project/get_projectfileifc/${projectHeader()}`,
+        {
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc.
+          headers: {
+            Authorization: authHeader(),
+            // Add other headers as needed
           },
-        );
-      } catch (err) {
-        console.error('Error loading IFC.');
-        console.error(err);
+        },
+      );
+      if (file.status !== 200) {
+        this.notifyError('Error loading IFC. Please reupload your IFC file.');
       }
+      const data = await file.arrayBuffer();
+      const buffer = new Uint8Array(data);
+      const group = await fragments.load(buffer);
+      group.name = 'projectId';
     },
+
     getCameraPosition() {
+      // TODO : move camera to position with controls
       if (this.othercamPos.position) {
-        this.camera.position.x = this.othercamPos.position.x;
-        this.camera.position.y = this.othercamPos.position.y;
-        this.camera.position.z = this.othercamPos.position.z;
-        this.controls.update();
-        this.render();
+        this.components.camera._perspectiveCamera.position.x =
+          this.othercamPos.position.x;
+        this.components.camera._perspectivecamera.position.y =
+          this.othercamPos.position.y;
+        this.components.camera._perspectivecamera.position.z =
+          this.othercamPos.position.z;
+        //this.controls.update();
       }
     },
     roundNumbers(obj) {
@@ -352,94 +342,37 @@ export default {
       });
       return obj;
     },
+
     updateCamera() {
       this.updateAvatar();
       this.updateObjectPostition(this.selectedSubprojects);
+      let position = this.components.camera.controls.getPosition();
       this.camPos = {
-        x: this.camera.position.x.toFixed(2),
-        y: this.camera.position.y.toFixed(2),
-        z: this.camera.position.z.toFixed(2),
-        dir: this.roundNumbers(this.camera.getWorldDirection(this.vector)),
-      };
-      //send camera position to Server
-      this.$store.dispatch('viewport/setowncamPos', this.camPos);
-      this.render();
-    },
-    updateCamera: debounce(function () {
-      this.updateAvatar();
-      this.updateObjectPostition(this.selectedSubprojects);
-      this.camPos = {
-        x: this.camera.position.x.toFixed(2),
-        y: this.camera.position.y.toFixed(2),
-        z: this.camera.position.z.toFixed(2),
-        dir: this.roundNumbers(this.camera.getWorldDirection(this.vector)),
-      };
-      this.$store.dispatch('viewport/setowncamPos', this.camPos);
-      this.render();
-    }, 10), // Debounce for 100ms
+        x: position.x.toFixed(2),
+        y: position.y.toFixed(2),
+        z: position.z.toFixed(2),
 
-    render: debounce(function () {
-      this.renderer.render(this.scene, this.camera);
-    }, 10), // Debounce for 50ms
+        dir: this.roundNumbers(
+          this.components.camera
+            .get('Perspective')
+            .getWorldDirection(this.vector),
+        ),
+      };
+      this.$store.dispatch('viewport/setowncamPos', this.camPos);
+    }, // Debounce for 100ms
 
     takeScreenshot() {
-      //rednder without debounce
-      this.renderer.render(this.scene, this.camera);
-      this.$store.dispatch(
-        'viewport/imgStore',
-        this.renderer.domElement.toDataURL(),
-      );
-    },
+      let scene = this.components.scene.get();
+      let camera = this.components.camera.get();
 
-    pointerMove(event) {
-      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-      if (this.isDragging) {
-        this.raycaster.ray.intersectPlane(this.plane, this.planeIntersect);
-        this.dragObject.position.addVectors(this.planeIntersect, this.shift);
-        this.updateCamera();
-      }
-    },
-    pointerDown() {
-      const intersects = this.raycaster.intersectObjects(
-        this.scene.children,
-        false,
-      );
-      console.log('pointerDown', intersects);
-      if (intersects.length) {
-        this.found = intersects[0];
-        //dont move parent Project
-        if (this.found.object.name !== 'projectId') {
-          this.controls.enabled = false;
-          this.pIntersect.copy(this.found.point);
-          this.plane.setFromNormalAndCoplanarPoint(
-            this.pNormal,
-            this.pIntersect,
-          );
-          this.shift.subVectors(this.found.object.position, this.found.point);
-          this.isDragging = true;
-          this.dragObject = this.found.object;
-          this.found.object.userData.color = this.found.object.material;
-          this.found.object.material = this.highlightMaterial;
-        }
-      }
-    },
-    pointerUp() {
-      if (this.isDragging) {
-        this.isDragging = false;
-        if (this.dragObject.name.match(/subprojectId/)) {
-          this.$store.dispatch('viewport/setSuprojectPosition', {
-            id: parseInt(this.dragObject.name.replace('subprojectId:', '')),
-            position: this.dragObject.position,
-          });
-        }
-        this.controls.enabled = true;
-        this.found.object.material = this.found.object.userData.color;
-        this.dragObject = null;
-        this.updateObjectPostition(this.selectedSubprojects);
-        this.updateCamera();
-      }
+      let renderer = this.components.renderer._renderer;
+
+      renderer.render(scene, camera);
+      console.log(renderer);
+
+      let screenshot = renderer.domElement.toDataURL();
+
+      this.$store.dispatch('viewport/imgStore', screenshot);
     },
     pullSpPositions() {
       this.$http
@@ -478,6 +411,7 @@ export default {
     },
     selectedSubprojects(newVal, oldVal) {
       if (newVal.length !== oldVal.length) {
+        console.log('selectedSubprojects', newVal, oldVal);
         this.insertSubproject(newVal);
         this.removeSubproject(this.subprojectsToRemove);
         this.updateObjectPostition(newVal);
@@ -497,22 +431,9 @@ export default {
     if (this.hasSubproject) {
       this.pullSpPositions();
     }
-    this.controls.addEventListener('change', this.updateCamera);
-    this.container.addEventListener('pointerdown', this.pointerDown);
-    this.container.addEventListener('pointermove', this.pointerMove);
-    this.container.addEventListener('pointerup', this.pointerUp);
-    // call this only in static scenes (i.e., if there is no animation loop)
-  },
-  created() {
-    window.addEventListener('resize', this.resizeWindow);
   },
   destroyed() {
-    this.scene.dispose();
-    window.removeEventListener('resize', this.resizeWindow);
-    this.controls.removeEventListener('change', this.updateCamera);
-    this.container.removeEventListener('pointerdown', this.pointerDown);
-    this.container.removeEventListener('pointermove', this.pointerMove);
-    this.container.removeEventListener('pointerup', this.pointerUp);
+    this.components.dispose();
   },
 };
 </script>

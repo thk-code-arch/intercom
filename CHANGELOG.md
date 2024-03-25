@@ -1,5 +1,18 @@
 # Changelog
 
+
+## [2.0.2] - 2024-03-25
+
+### Frontend:
+- Implemented new GroupSelector to move objects, when enabled
+- Removed Classic IFC Viewer
+- New upload method for IFC files
+
+
+### Backend:
+
+- Implemented changes to the project controller in the backend, accept only fragment files
+
 ## [2.0.1] - 2024-03-22
 
 ### Frontend:
@@ -21,13 +34,13 @@
 
 
 ### Backend:
-- Upgraded to NestJS v10 to leverage the latest improvements and security enhancements of the framework.
-- Updated all project dependencies to their latest versions to ensure compatibility with NestJS v10 and address security vulnerabilities.
-- Fixed various bugs that were identified during the upgrade process, improving the overall stability and performance of the application.
+- Upgraded to NestJS v10
+- Updated all project dependencies to their latest versions
+- Fixed various bugs that were identified during the upgrade process
 - Removed database seeding functionality due to lack of support in the new ecosystem
 
 ### Misc:
-- Created new Dockerfiles configured for Node.js 18, optimizing container performance and compatibility with the latest Node.js features.
+- Created new Dockerfiles configured for Node.js 18
 - Switched to pnpm as the package manager to efficient handling of monorepos.
 
 

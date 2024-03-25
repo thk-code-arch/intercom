@@ -35,7 +35,7 @@ export const iosockets = {
               actionPrefix: 'CHAT_',
               mutationPrefix: 'CHAT_',
             },
-          })
+          }),
         );
         commit('chatroom_initiated');
       }
@@ -45,7 +45,7 @@ export const iosockets = {
         const playersocket = io(SOCKETS + '/viewport', {
           query: `token=${authHeader().replace(
             'Bearer ',
-            ''
+            '',
           )}&projectId=${projectHeader()}`,
         });
         Vue.use(
@@ -58,14 +58,18 @@ export const iosockets = {
               actionPrefix: 'PLAYER_',
               mutationPrefix: 'PLAYER_',
             },
-          })
+          }),
         );
         commit('viewport_initiated');
       }
     },
     close_sockets({ commit }) {
-      this._vm.$socket.viewport.close();
-      this._vm.$socket.chatroom.close();
+      if (this._vm.$socket?.chatroom) {
+        this._vm.$socket.chatroom.close();
+      }
+      if (this._vm.$socket?.viewport) {
+        this._vm.$socket.viewport.close();
+      }
       commit('closeSockets');
     },
   },

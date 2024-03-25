@@ -5,9 +5,12 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 // Allow only images
 export const IFCFileFilter = (req, file, callback) => {
-  if (!file.originalname.match(/\.(ifc)$/)) {
+  if (!file.originalname.match(/\.(frag)$/)) {
     return callback(
-      new HttpException('Only ifc files are allowed!', HttpStatus.BAD_REQUEST),
+      new HttpException(
+        'Only ifc fragement files are allowed!',
+        HttpStatus.BAD_REQUEST,
+      ),
       false,
     );
   }

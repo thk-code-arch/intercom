@@ -7,7 +7,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { FetchVideo } from './utils.dto';
 import * as cheerio from 'cheerio';
 import * as fs from 'fs';
-import * as child from 'child_process';
 
 @Injectable()
 export class UtilsService {
@@ -99,27 +98,6 @@ export class UtilsService {
 
     await this.downloadImage(theresult.image, theresult.thumbnail);
     return theresult;
-  }
-
-  async convertIfc(incomingFile: string) {
-    return new Promise((resolve, reject) => {
-      child.exec(
-        `IfcConvert -v "/files/input/${incomingFile}.ifc" "/files/output/${incomingFile}.glb"`,
-        (error: child.ExecException, stdout: string, stderr: string) => {
-          if (error) {
-            console.log('errror');
-            this.logger.log(error);
-            reject(` ${error}, ${stdout}, ${stderr} `);
-          } else if (stderr) {
-            reject(` ${error}, ${stdout}, ${stderr} `);
-            this.logger.log(stderr);
-          } else {
-            this.logger.log(stdout);
-            resolve(stdout);
-          }
-        },
-      );
-    });
   }
 
   async createIssue(issue): Promise<void> {

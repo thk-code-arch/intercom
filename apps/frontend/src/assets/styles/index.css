@@ -19,6 +19,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @font-face {
   font-family: "din-2014";
   src: url("../fonts/DIN2014-Regular.ttf");
@@ -42,4 +43,10 @@
 
 .has-tooltip:hover .the-tooltip {
   @apply z-50 visible;
+}
+
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
 }
