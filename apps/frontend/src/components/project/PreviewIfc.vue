@@ -113,7 +113,7 @@ export default {
       const randomChars = generateRandomChars();
 
       // Create and return the filename
-      return `file-${timestamp}_${randomChars}.${extension}`;
+      return `${projectHeader()}_file-${timestamp}_${randomChars}.${extension}`;
     },
 
     async uploadFragments() {
