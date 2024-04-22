@@ -1,7 +1,7 @@
 // Copyright (c) 2021 Steffen Stein <mail@steffenstein.com> For LICENSE see docs/LICENSE
 
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -14,7 +14,9 @@ const corsOptions = {
   origin: ['https://' + process.env.IC_CORS, 'http://localhost:8080'],
 };
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'], // Adjust log levels as needed
+  });
 
   const options = new DocumentBuilder()
     .setTitle('intercom-backend')
@@ -40,5 +42,6 @@ async function bootstrap() {
   app.useGlobalFilters(new EntityNotFoundExceptionFilter());
   app.enableCors(corsOptions);
   await app.listen(3000);
+  Logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
