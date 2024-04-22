@@ -92,13 +92,37 @@ export default {
       this.components.dispose();
     },
 
+    createFilename(extension = 'frag') {
+      // Helper function to generate 4 random alphanumeric characters
+      function generateRandomChars() {
+        const possibleChars =
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomChars = '';
+        for (let i = 0; i < 4; i++) {
+          randomChars += possibleChars.charAt(
+            Math.floor(Math.random() * possibleChars.length),
+          );
+        }
+        return randomChars;
+      }
+
+      // Get current timestamp
+      const timestamp = Date.now();
+
+      // Generate random characters
+      const randomChars = generateRandomChars();
+
+      // Create and return the filename
+      return `file-${timestamp}_${randomChars}.${extension}`;
+    },
+
     async uploadFragments() {
       if (!this.fragments.groups.length) return;
 
       const group = this.fragments.groups[0];
       const data = this.fragments.export(group);
       const blob = new Blob([data]);
-      const fragmentFile = new File([blob], 'small.frag');
+      const fragmentFile = new File([blob], this.createFilename());
 
       const formData = new FormData();
       formData.append('file', fragmentFile);
